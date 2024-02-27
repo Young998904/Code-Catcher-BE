@@ -1,7 +1,0 @@
-data:
-  mongodb:
-    authentication-database: admin
-    username: root
-    password:
-    uri: mongodb://localhost:27017
-    database: code_catcher
