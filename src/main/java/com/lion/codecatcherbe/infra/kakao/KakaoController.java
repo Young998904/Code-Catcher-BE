@@ -18,7 +18,6 @@ public class KakaoController {
 
     @RequestMapping("/callback")
     public ResponseEntity<SuccessLoginInfo> kakaoLogin (@RequestParam String code) throws JsonProcessingException {
-//        System.out.printf("인가 코드 호출 성공 \n" + code + "\n");
         SuccessLoginInfo info = kakaoService.kakaoLogin(code);
         return new ResponseEntity<>(info, generateHeader(info.getJwt()), HttpStatus.OK);
     }

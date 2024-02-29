@@ -22,7 +22,6 @@ public class TokenProvider {
         TokenProvider.secret = secret;
         this.tokenValidityInSeconds = tokenValidityInSeconds;
     }
-
     public static String getSubject(String jwt) {
         try {
             Claims claims = Jwts.parserBuilder()

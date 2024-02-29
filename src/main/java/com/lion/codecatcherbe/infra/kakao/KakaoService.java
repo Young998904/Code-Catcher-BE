@@ -37,31 +37,13 @@ public class KakaoService {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
 
-//        System.out.printf("엑세스 코드 호출 성공 \n" + accessToken + "\n");
-
-        // 2. 토큰으로 카카오 API 호출
+        // 2. "엑세스 토큰" 으로 카카오 API 호출하여 유저 정보를 가지고옴
         SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
-//        String userInfo =
-//            "카카오 id :" + kakaoUserInfo.getId().toString() + "\n" +
-//                "유저 nickname : " + kakaoUserInfo.getNickname() + "\n" +
-//                "유저 email : " + kakaoUserInfo.getEmail();
-//
-//        System.out.printf("유저 정보 가져오기 성공 \n" + userInfo);
 
-        // 3. 카카오ID로 회원가입 처리
+        // 3. (필요할 경우) 회원가입 처리, 회원일 경우 유저 정보를 바로 가지고옴
         User kakaoUser = registerKakaoUserIfNeed(kakaoUserInfo);
 
-//        System.out.println("회원 가입 성공");
-
-//        // 4. 강제 로그인 처리
-//        Authentication authentication = forceLogin(kakaoUser);
-//
-//        // 5. response Header에 JWT 토큰 추가
-//        kakaoUsersAuthorizationInput(authentication, response);
-//        return kakaoUserInfo;
-
-        // 로그인 후 jwt 리턴
-//        System.out.println("jwt 생성 : " + jwt);
+        // 4. 로그인 후 jwt 리턴
         String jwt = login(kakaoUser);
 
         return SuccessLoginInfo.builder()
@@ -124,8 +106,7 @@ public class KakaoService {
 
         Long id = jsonNode.get("id").asLong();
         String email = jsonNode.get("kakao_account").get("email").asText();
-        String nickname = jsonNode.get("properties")
-            .get("nickname").asText();
+        String nickname = jsonNode.get("properties").get("nickname").asText();
 
         return new SocialUserInfoDto(id, nickname, email);
 
