@@ -1,4 +1,4 @@
-package com.lion.codecatcherbe.infra.kakao;
+package com.lion.codecatcherbe.infra.kakao.security;
 
 import com.lion.codecatcherbe.domain.user.model.User;
 import io.jsonwebtoken.Claims;

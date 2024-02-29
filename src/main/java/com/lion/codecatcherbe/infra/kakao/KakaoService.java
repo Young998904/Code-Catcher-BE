@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lion.codecatcherbe.domain.user.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
+import com.lion.codecatcherbe.infra.kakao.dto.SocialUserInfoDto;
+import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

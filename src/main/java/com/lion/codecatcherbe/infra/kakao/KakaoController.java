@@ -1,6 +1,7 @@
 package com.lion.codecatcherbe.infra.kakao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.lion.codecatcherbe.infra.kakao.dto.JwtDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

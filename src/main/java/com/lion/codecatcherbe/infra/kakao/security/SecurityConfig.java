@@ -1,4 +1,4 @@
-package com.lion.codecatcherbe.infra.kakao;
+package com.lion.codecatcherbe.infra.kakao.security;
 
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
