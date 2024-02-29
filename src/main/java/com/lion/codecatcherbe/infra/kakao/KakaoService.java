@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lion.codecatcherbe.domain.user.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.dto.SocialUserInfoDto;
+import com.lion.codecatcherbe.infra.kakao.dto.SuccessLoginInfo;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    public String kakaoLogin(String code)
+    public SuccessLoginInfo kakaoLogin(String code)
         throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code);
@@ -61,7 +62,13 @@ public class KakaoService {
 
         // 로그인 후 jwt 리턴
 //        System.out.println("jwt 생성 : " + jwt);
-        return login(kakaoUser);
+        String jwt = login(kakaoUser);
+
+        return SuccessLoginInfo.builder()
+            .jwt(jwt)
+            .nickname(kakaoUser.getName())
+            .userId(kakaoUser.getKakaoId())
+            .build();
     }
 
     private String getAccessToken(String code)

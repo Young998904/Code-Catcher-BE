@@ -1,7 +1,7 @@
 package com.lion.codecatcherbe.infra.kakao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lion.codecatcherbe.infra.kakao.dto.JwtDto;
+import com.lion.codecatcherbe.infra.kakao.dto.SuccessLoginInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,10 +17,10 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
     @RequestMapping("/callback")
-    public ResponseEntity<JwtDto> kakaoLogin (@RequestParam String code) throws JsonProcessingException {
+    public ResponseEntity<SuccessLoginInfo> kakaoLogin (@RequestParam String code) throws JsonProcessingException {
 //        System.out.printf("인가 코드 호출 성공 \n" + code + "\n");
-        String jwt = kakaoService.kakaoLogin(code);
-        return new ResponseEntity<>(new JwtDto(jwt), generateHeader(jwt), HttpStatus.OK);
+        SuccessLoginInfo info = kakaoService.kakaoLogin(code);
+        return new ResponseEntity<>(info, generateHeader(info.getJwt()), HttpStatus.OK);
     }
 
     private HttpHeaders generateHeader(String jwt) {
