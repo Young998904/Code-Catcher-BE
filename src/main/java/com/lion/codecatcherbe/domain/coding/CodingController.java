@@ -20,8 +20,8 @@ public class CodingController {
 
     private final CodingService codingService;
 
-    @GetMapping("/question")
-    public ResponseEntity<QuestionRes> getQuestion (@RequestParam String id) {
+    @GetMapping("/mock/question")
+    public ResponseEntity<QuestionRes> findMockQuestion (@RequestParam Long id) {
         QuestionRes question = QuestionRes.builder()
             .title("프린터 큐")
             .subject("Queue(큐)")
@@ -39,6 +39,11 @@ public class CodingController {
             .build();
 
         return new ResponseEntity<>(question, HttpStatus.OK);
+    }
+
+    @GetMapping("/question")
+    public ResponseEntity<QuestionRes> findQuestion (@RequestParam Long id) {
+        return codingService.findProblem(id);
     }
 
     @PostMapping("/generate")
