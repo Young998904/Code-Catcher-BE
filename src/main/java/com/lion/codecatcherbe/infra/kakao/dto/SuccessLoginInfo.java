@@ -11,4 +11,6 @@ public class SuccessLoginInfo {
     private String jwt;
     private Long userId;
     private String nickname;
+    private String email;
+    private int level;
 }
