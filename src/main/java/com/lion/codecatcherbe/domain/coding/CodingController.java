@@ -1,16 +1,25 @@
 package com.lion.codecatcherbe.domain.coding;
 
+import com.lion.codecatcherbe.domain.coding.dto.request.QuestionGenReq;
 import com.lion.codecatcherbe.domain.coding.dto.response.QuestionRes;
+import com.lion.codecatcherbe.domain.coding.service.CodingService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/coding")
 public class CodingController {
+
+    private final CodingService codingService;
+
     @GetMapping("/question")
     public ResponseEntity<QuestionRes> getQuestion (@RequestParam String id) {
         QuestionRes question = QuestionRes.builder()
@@ -30,4 +39,10 @@ public class CodingController {
             .build();
 
         return new ResponseEntity<>(question, HttpStatus.OK);
-    }}
+    }
+
+    @PostMapping("/generate")
+    public HttpStatus saveProblem (@RequestBody QuestionGenReq questionGenReq) {
+        return codingService.saveProblem(questionGenReq.getContent());
+    }
+}
