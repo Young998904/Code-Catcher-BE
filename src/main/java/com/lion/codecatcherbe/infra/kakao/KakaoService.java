@@ -50,6 +50,8 @@ public class KakaoService {
             .jwt(jwt)
             .nickname(kakaoUser.getName())
             .userId(kakaoUser.getKakaoId())
+            .email(kakaoUser.getEmail())
+            .level(kakaoUser.getLevel())
             .build();
     }
 
