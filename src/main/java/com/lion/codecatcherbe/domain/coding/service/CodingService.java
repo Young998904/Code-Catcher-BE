@@ -1,11 +1,19 @@
 package com.lion.codecatcherbe.domain.coding.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lion.codecatcherbe.domain.coding.dto.response.QuestionListRes;
+import com.lion.codecatcherbe.domain.coding.dto.response.QuestionListRes.QuestionInfo;
 import com.lion.codecatcherbe.domain.coding.dto.response.QuestionRes;
 import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CodingService {
     private final SequenceGeneratorService sequenceGeneratorService;
     private final ProblemRepository problemRepository;
+    private final MongoOperations mongoOperations;
     @Transactional
     public HttpStatus saveProblem(String content) {
         ObjectMapper mapper = new ObjectMapper();
@@ -60,5 +69,33 @@ public class CodingService {
             .build();
 
         return new ResponseEntity<>(questionRes, HttpStatus.OK);
+    }
+
+    public ResponseEntity<QuestionListRes> findProblemList() {
+        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusHours(9L);
+        List<Problem> problemList = findProblemsByCreatedAt(start, start.plusHours(24L));
+
+        problemList.sort(Comparator.comparingLong(Problem::getLevel));
+
+        Problem p1 = problemList.get(0);
+        Problem p2 = problemList.get(1);
+        Problem p3 = problemList.get(2);
+
+        QuestionListRes questionListRes = QuestionListRes.builder()
+            .question_1(new QuestionInfo(p1.getId(), p1.getLevel(), p1.getTitle(), p1.getSubject(), p1.getScript()))
+            .question_2(new QuestionInfo(p2.getId(), p2.getLevel(), p2.getTitle(), p2.getSubject(), p2.getScript()))
+            .question_3(new QuestionInfo(p3.getId(), p3.getLevel(), p3.getTitle(), p3.getSubject(), p3.getScript()))
+            .build();
+
+        return new ResponseEntity<>(questionListRes, HttpStatus.OK);
+    }
+
+    public List<Problem> findProblemsByCreatedAt(LocalDateTime start, LocalDateTime end) {
+        // 시작 날짜와 종료 날짜 설정
+
+        Query query = new Query(Criteria.where("createdAt").gt(start.minusHours(24L)).lt(end.minusHours(24L)));
+
+//        System.out.println(query);
+        return mongoOperations.find(query, Problem.class);
     }
 }

@@ -71,4 +71,9 @@ public class CodingController {
 
         return new ResponseEntity<>(questionListRes, HttpStatus.OK);
     }
+
+    @GetMapping("/questionlist")
+    public ResponseEntity<QuestionListRes> findQuestionList() {
+        return codingService.findProblemList();
+    }
 }
