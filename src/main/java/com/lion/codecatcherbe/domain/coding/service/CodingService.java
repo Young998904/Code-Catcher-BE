@@ -93,7 +93,7 @@ public class CodingService {
     public List<Problem> findProblemsByCreatedAt(LocalDateTime start, LocalDateTime end) {
         // 시작 날짜와 종료 날짜 설정
 
-        Query query = new Query(Criteria.where("createdAt").gt(start.minusHours(24L)).lt(end.minusHours(24L)));
+        Query query = new Query(Criteria.where("createdAt").gt(start).lt(end));
 
 //        System.out.println(query);
         return mongoOperations.find(query, Problem.class);
