@@ -19,4 +19,8 @@ public class User {
     private String name;
     @Default
     private int level = 1;
+
+    public void setUserName (String newName) {
+        this.name = newName;
+    }
 }
