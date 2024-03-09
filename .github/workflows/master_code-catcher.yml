@@ -21,12 +21,12 @@ jobs:
         with:
           java-version: '17'
 
-      - name: Build with Gradle
-        run: ./gradlew build
-
       - name : Copy yml File
         run : |
-          echo "${{ secrets.BE_APPLICATION_PROD_YML }}" > ${{ github.workspace }}/src/main/resources/application-prod.yml
+          echo "${{ secrets.CONFIG_YML }}" > ${{ github.workspace }}/src/main/resources/application-prod.yml
+
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
