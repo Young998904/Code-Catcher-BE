@@ -23,8 +23,7 @@ jobs:
 
       - name : Copy yml File
         run : |
-          echo "${{ secrets.CONFIG_YML }}" > ${{ github.workspace }}/src/main/resources/application-prod.yml
-
+          echo "${{ secrets.BE_APPLICATION_PROD_YML }}" | base64 -d > ${{ github.workspace }}/src/main/resources/application-prod.yml
       - name: Build with Gradle
         run: ./gradlew build
 
