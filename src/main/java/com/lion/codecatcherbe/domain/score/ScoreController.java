@@ -1,6 +1,7 @@
 package com.lion.codecatcherbe.domain.score;
 
 import com.lion.codecatcherbe.domain.score.dto.request.ScoreProblemReq;
+import com.lion.codecatcherbe.domain.score.dto.response.ScoreSubmitResultRes;
 import com.lion.codecatcherbe.domain.score.dto.response.ScoreTestCaseResultRes;
 import com.lion.codecatcherbe.domain.score.dto.response.ScoreTestCaseResultRes.Result;
 import org.springframework.http.HttpStatus;
@@ -37,5 +38,42 @@ public class ScoreController {
             .build();
 
         return new ResponseEntity<>(scoreTestCaseResultRes, HttpStatus.OK);
+    }
+
+    @PostMapping("/mock/submit")
+    public ResponseEntity<ScoreSubmitResultRes> SubmitCode(@RequestBody ScoreProblemReq scoreProblemReq) {
+        Result r1 = Result.builder()
+            .error(false)
+            .error_message(null)
+            .input("2 5")
+            .expected_output("10")
+            .actual_output("10")
+            .correct(true)
+            .build();
+        Result r2 = Result.builder()
+            .error(false)
+            .error_message(null)
+            .input("6 10")
+            .expected_output("16")
+            .actual_output("16")
+            .correct(true)
+            .build();
+        Result r3 = Result.builder()
+            .error(false)
+            .error_message(null)
+            .input("7 7")
+            .expected_output("14")
+            .actual_output("13")
+            .correct(false)
+            .build();
+
+        ScoreSubmitResultRes scoreSubmitResultRes = ScoreSubmitResultRes.builder()
+            .isCorrect(false)
+            .testCase_1(r1)
+            .testCase_2(r2)
+            .testCase_3(r3)
+            .build();
+
+        return new ResponseEntity<>(scoreSubmitResultRes, HttpStatus.OK);
     }
 }
