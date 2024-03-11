@@ -56,4 +56,24 @@ public class UserService {
         }
         return userId;
     }
+
+    public HttpStatus deleteUser(String token) {
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return HttpStatus.UNAUTHORIZED;
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return HttpStatus.NOT_FOUND;
+        }
+
+        userRepository.delete(user);
+
+        return HttpStatus.OK;
+    }
 }

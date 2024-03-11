@@ -2,7 +2,9 @@ package com.lion.codecatcherbe.domain.user;
 
 import com.lion.codecatcherbe.domain.user.dto.NicNameDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -19,5 +21,10 @@ public class UserController {
     @PatchMapping("/nickname")
     public ResponseEntity<NicNameDto> UpdateUserNicName(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody NicNameDto nicNameDto) {
         return userService.updateUserNickname(token, nicNameDto);
+    }
+
+    @DeleteMapping("/withdraw")
+    public HttpStatus DeleteUser(@RequestHeader(value = "Authorization", required = false) String token) {
+        return userService.deleteUser(token);
     }
 }
