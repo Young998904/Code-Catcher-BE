@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,5 +52,10 @@ public class ScoreController {
     @PostMapping("/testcase")
     public ResponseEntity<ScoreTestCaseResultRes> ScoreTestCases(@RequestBody ScoreProblemReq scoreProblemReq) {
         return scoreService.getScoreTestCasesResult(scoreProblemReq);
+    }
+
+    @PostMapping("/submit/retry")
+    public ResponseEntity<ScoreSubmitResultRes> SubmitRetryCode(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody ScoreProblemReq scoreProblemReq) {
+        return scoreService.getScoreSubmitRetryResult(token, scoreProblemReq);
     }
 }
