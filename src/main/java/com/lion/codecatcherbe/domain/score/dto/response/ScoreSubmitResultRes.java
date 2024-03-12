@@ -7,18 +7,7 @@ import lombok.Getter;
 @Builder
 public class ScoreSubmitResultRes {
     private boolean isCorrect;
-    private ScoreTestCaseResultRes.Result testCase_1;
-    private ScoreTestCaseResultRes.Result testCase_2;
-    private ScoreTestCaseResultRes.Result testCase_3;
-
-    @Getter
-    @Builder
-    public static class Result {
-        private boolean error;
-        private String error_message;
-        private String input;
-        private String expected_output;
-        private String actual_output;
-        private boolean correct;
-    }
+    private ScoreApiRes testCase_1;
+    private ScoreApiRes testCase_2;
+    private ScoreApiRes testCase_3;
 }

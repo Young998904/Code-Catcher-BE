@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
 public class ScoreApiRes {
     private boolean error;
     private String error_message;
