@@ -1,37 +1,30 @@
 package com.lion.codecatcherbe.domain.score;
 
 import com.lion.codecatcherbe.domain.score.dto.request.ScoreProblemReq;
+import com.lion.codecatcherbe.domain.score.dto.response.ScoreApiRes;
 import com.lion.codecatcherbe.domain.score.dto.response.ScoreSubmitResultRes;
 import com.lion.codecatcherbe.domain.score.dto.response.ScoreTestCaseResultRes;
-import com.lion.codecatcherbe.domain.score.dto.response.ScoreTestCaseResultRes.Result;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/score")
 public class ScoreController {
+
+    private final ScoreService scoreService;
+
     @PostMapping("/mock/testcase")
-    public ResponseEntity<ScoreTestCaseResultRes> ScoreTestCases(@RequestBody ScoreProblemReq scoreProblemReq) {
-        Result r1 = Result.builder()
-            .error(false)
-            .error_message(null)
-            .input("2 5")
-            .expected_output("10")
-            .actual_output("10")
-            .correct(true)
-            .build();
-        Result r2 = Result.builder()
-            .error(true)
-            .error_message("line 1\n    gcd(a, b):\nIndentationError: unexpected indent\n")
-            .input("3 9")
-            .expected_output("12")
-            .actual_output(null)
-            .correct(false)
-            .build();
+    public ResponseEntity<ScoreTestCaseResultRes> ScoreMockTestCases(@RequestBody ScoreProblemReq scoreProblemReq) {
+        ScoreApiRes r1 = new ScoreApiRes(false, null, "2 5", "10", "10", true);
+        ScoreApiRes r2 = new ScoreApiRes(true, "line 1\n    gcd(a, b):\nIndentationError: unexpected indent\n", "3 9", "12", "null", false);
+
         ScoreTestCaseResultRes scoreTestCaseResultRes = ScoreTestCaseResultRes.builder()
             .testCase_1(r1)
             .testCase_2(r2)
@@ -42,30 +35,9 @@ public class ScoreController {
 
     @PostMapping("/mock/submit")
     public ResponseEntity<ScoreSubmitResultRes> SubmitCode(@RequestBody ScoreProblemReq scoreProblemReq) {
-        Result r1 = Result.builder()
-            .error(false)
-            .error_message(null)
-            .input("2 5")
-            .expected_output("10")
-            .actual_output("10")
-            .correct(true)
-            .build();
-        Result r2 = Result.builder()
-            .error(false)
-            .error_message(null)
-            .input("6 10")
-            .expected_output("16")
-            .actual_output("16")
-            .correct(true)
-            .build();
-        Result r3 = Result.builder()
-            .error(false)
-            .error_message(null)
-            .input("7 7")
-            .expected_output("14")
-            .actual_output("13")
-            .correct(false)
-            .build();
+        ScoreApiRes r1 = new ScoreApiRes(false, null, "2 5", "10", "10", true);
+        ScoreApiRes r2 = new ScoreApiRes(false, null, "6 10", "16", "16", true);
+        ScoreApiRes r3 = new ScoreApiRes(false, null, "7 7", "14", "13", false);
 
         ScoreSubmitResultRes scoreSubmitResultRes = ScoreSubmitResultRes.builder()
             .isCorrect(false)
@@ -75,5 +47,15 @@ public class ScoreController {
             .build();
 
         return new ResponseEntity<>(scoreSubmitResultRes, HttpStatus.OK);
+    }
+
+    @PostMapping("/testcase")
+    public ResponseEntity<ScoreTestCaseResultRes> ScoreTestCases(@RequestBody ScoreProblemReq scoreProblemReq) {
+        return scoreService.getScoreTestCasesResult(scoreProblemReq);
+    }
+
+    @PostMapping("/submit/retry")
+    public ResponseEntity<ScoreSubmitResultRes> SubmitRetryCode(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody ScoreProblemReq scoreProblemReq) {
+        return scoreService.getScoreSubmitRetryResult(token, scoreProblemReq);
     }
 }
