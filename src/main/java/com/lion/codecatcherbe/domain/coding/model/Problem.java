@@ -38,5 +38,7 @@ public class Problem {
     private String input_3;
     private String output_3;
     private String python_code;
+    private String python_explain;
     private String java_code;
+    private String java_explain;
 }
