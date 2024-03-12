@@ -47,4 +47,9 @@ public class ScoreController {
 
         return new ResponseEntity<>(scoreSubmitResultRes, HttpStatus.OK);
     }
+
+    @PostMapping("/testcase")
+    public ResponseEntity<ScoreTestCaseResultRes> ScoreTestCases(@RequestBody ScoreProblemReq scoreProblemReq) {
+        return scoreService.getScoreTestCasesResult(scoreProblemReq);
+    }
 }
