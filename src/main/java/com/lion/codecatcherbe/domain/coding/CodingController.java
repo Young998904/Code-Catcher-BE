@@ -5,6 +5,8 @@ import com.lion.codecatcherbe.domain.coding.dto.response.QuestionListRes;
 import com.lion.codecatcherbe.domain.coding.dto.response.QuestionListRes.QuestionInfo;
 import com.lion.codecatcherbe.domain.coding.dto.response.QuestionRes;
 import com.lion.codecatcherbe.domain.coding.service.CodingService;
+import com.lion.codecatcherbe.domain.coding.dto.request.GPTFeedBackReq;
+import com.lion.codecatcherbe.domain.coding.dto.response.GPTFeedBackResultRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,5 +77,14 @@ public class CodingController {
     @GetMapping("/questionlist")
     public ResponseEntity<QuestionListRes> findQuestionList() {
         return codingService.findProblemList();
+    }
+
+    @GetMapping("/mock/gpt/feedback")
+    public ResponseEntity<GPTFeedBackResultRes> getGPTFeedBack(@RequestBody GPTFeedBackReq gptFeedBackReq) {
+        GPTFeedBackResultRes gptFeedBackResultRes = GPTFeedBackResultRes.builder()
+            .gptCode("def gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return a\n\ndef lcm(a, b):\n    return a * b // gcd(a, b)\n\na, b = map(int, input().split())\nprint(lcm(a, b))")
+            .gptCodeExplain("이 파이썬 코드는 최대공약수(gcd)를 유클리드 호제법으로 구한 뒤, 입력받은 두 수의 곱을 최대공약수로 나누어 최소공배수(lcm)를 계산합니다.")
+            .build();
+        return new ResponseEntity<>(gptFeedBackResultRes, HttpStatus.OK);
     }
 }
