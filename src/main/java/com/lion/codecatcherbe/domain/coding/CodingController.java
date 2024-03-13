@@ -39,16 +39,16 @@ public class CodingController {
             .output_1("2")
             .input_2("5 2\n1 1 9 1 1\n")
             .output_2("1")
-            .input_3("4 2\n4 2 1 3\n")
-            .output_3("2")
+            .javaSubmitCode("import java.util.Scanner;\n\npublic class Main {\n    private static int gcd(int a, int b) {\n        while (b != 0) {\n            int temp = a % b;\n            a = b;\n            b = temp;\n        }\n        return a;\n    }\n    \n    private static int lcm(int a, int b) {\n        return a * (b / gcd(a, b));\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        int a = scanner.nextInt();\n        int b = scanner.nextInt();\n        System.out.println(lcm(a, b));\n        scanner.close();\n    }\n}")
+            .pythonSubmitCode(null)
             .build();
 
         return new ResponseEntity<>(question, HttpStatus.OK);
     }
 
     @GetMapping("/question")
-    public ResponseEntity<QuestionRes> findQuestion (@RequestParam Long id) {
-        return codingService.findProblem(id);
+    public ResponseEntity<QuestionRes> findQuestion (@RequestHeader(value = "Authorization", required = false) String token, @RequestParam Long id) {
+        return codingService.findProblem(token, id);
     }
 
     @PostMapping("/generate")

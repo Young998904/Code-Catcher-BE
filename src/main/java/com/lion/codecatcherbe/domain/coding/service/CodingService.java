@@ -77,12 +77,42 @@ public class CodingService {
         return HttpStatus.CREATED;
     }
 
-    public ResponseEntity<QuestionRes> findProblem(Long id) {
+    public ResponseEntity<QuestionRes> findProblem(String token, Long id) {
+        // 문제 가져오기
         Problem problem = problemRepository.findById(id).orElse(null);
 
         if (problem == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        // 유저의 풀이 정보 가져오기
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Submit submit = submitRepository.findByUserIdAndProblemId(userId, id).orElse(null);
+
+        String javaCode, pythonCode;
+
+        if (submit == null) {
+            javaCode = null;
+            pythonCode = null;
+        }
+        else {
+            javaCode = submit.getLastSubmitJavaCode();
+            pythonCode = submit.getLastSubmitPythonCode();
+        }
+
 
         QuestionRes questionRes = QuestionRes.builder()
             .title(problem.getTitle())
@@ -94,8 +124,8 @@ public class CodingService {
             .output_1(problem.getOutput_1())
             .input_2(problem.getOutput_2())
             .output_2(problem.getOutput_2())
-            .input_3(problem.getInput_3())
-            .output_3(problem.getOutput_3())
+            .javaSubmitCode(javaCode)
+            .pythonSubmitCode(pythonCode)
             .build();
 
         return new ResponseEntity<>(questionRes, HttpStatus.OK);
