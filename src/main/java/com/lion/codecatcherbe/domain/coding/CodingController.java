@@ -47,8 +47,8 @@ public class CodingController {
     }
 
     @GetMapping("/question")
-    public ResponseEntity<QuestionRes> findQuestion (@RequestParam Long id) {
-        return codingService.findProblem(id);
+    public ResponseEntity<QuestionRes> findQuestion (@RequestHeader(value = "Authorization", required = false) String token, @RequestParam Long id) {
+        return codingService.findProblem(token, id);
     }
 
     @PostMapping("/generate")
