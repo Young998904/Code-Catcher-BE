@@ -15,6 +15,7 @@ public class QuestionListRes {
     @Getter
     public static class QuestionInfo {
         private Long id;
+        private Boolean isSuccess;
         private Long level;
         private String title;
         private String subject;

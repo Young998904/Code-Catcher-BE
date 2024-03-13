@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,15 +59,15 @@ public class CodingController {
     @GetMapping("/mock/questionlist")
     public ResponseEntity<QuestionListRes> findMockQuestionList() {
         QuestionListRes questionListRes = QuestionListRes.builder()
-            .question_1(new QuestionInfo(1L, 1L, "숫자 배열의 모든 순열 찾기", "배열",
+            .question_1(new QuestionInfo(1L, true,1L, "숫자 배열의 모든 순열 찾기", "배열",
                 "주어진 숫자 배열에서 가능한 모든 순열을 구하는 프로그램을 작성하세요.\n"
                     + "순열이란, 주어진 숫자들을 재배치하여 얻을 수 있는 모든 가능한 배열입니다.\n"
                     + "예를 들어, [1,2,3]의 모든 순열은 [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]입니다."))
-            .question_2(new QuestionInfo(2L, 2L, "최소 동전 교환 문제", "동적 프로그래밍",
+            .question_2(new QuestionInfo(2L, false,2L, "최소 동전 교환 문제", "동적 프로그래밍",
                 "주어진 금액을 만들기 위해 필요한 최소한의 동전 개수를 찾는 프로그램을 작성하세요.\n"
                     + "사용할 수 있는 동전의 종류는 무제한이며, 각 동전의 가치는 주어진 배열에 담겨 있습니다.\n"
                     + "예를 들어, 가치가 1, 2, 5인 동전으로 11원을 만들 때 필요한 최소 동전 개수를 계산해야 합니다."))
-            .question_3(new QuestionInfo(3L, 3L, "최대 힙에서의 데이터 조회", "힙",
+            .question_3(new QuestionInfo(3L, null,3L, "최대 힙에서의 데이터 조회", "힙",
                 "정수들을 저장하고 있는 최대 힙(max heap)이 있습니다. 이 힙에서 k번째로 큰 요소를 조회하는 프로그램을 작성하세요.\n"
                     + "예를 들어, 최대 힙에 [9, 7, 5, 3, 2, 4, 1]이 저장되어 있다면, k=3인 경우, 세 번째로 큰 요소는 5입니다."))
             .build();
@@ -75,8 +76,8 @@ public class CodingController {
     }
 
     @GetMapping("/questionlist")
-    public ResponseEntity<QuestionListRes> findQuestionList() {
-        return codingService.findProblemList();
+    public ResponseEntity<QuestionListRes> findQuestionList(@RequestHeader(value = "Authorization", required = false) String token) {
+        return codingService.findProblemList(token);
     }
 
     @GetMapping("/mock/gpt/feedback")
