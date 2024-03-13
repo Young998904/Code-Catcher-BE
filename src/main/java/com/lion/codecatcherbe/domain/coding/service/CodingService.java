@@ -10,15 +10,13 @@ import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
 import com.lion.codecatcherbe.domain.score.model.Submit;
 import com.lion.codecatcherbe.domain.score.repository.SubmitRepository;
-import com.lion.codecatcherbe.domain.user.UserRepository;
+import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
-import javax.swing.text.StyledEditorKit.BoldAction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -135,7 +133,7 @@ public class CodingService {
 
     public ResponseEntity<QuestionListRes> findProblemList(String token) {
         // 오늘 날짜를 가져오고 끝날짜를 24시간 뒤로 설정하여 문제의 정보를 가지고 옴
-        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusHours(9L);
+        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
         List<Problem> problemList = findProblemsByCreatedAt(start, start.plusHours(24L));
 
         // 레벨 순으로 정렬

@@ -4,7 +4,7 @@ import com.lion.codecatcherbe.domain.bookmark.dto.BookMarkReq;
 import com.lion.codecatcherbe.domain.bookmark.model.Bookmark;
 import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
-import com.lion.codecatcherbe.domain.user.UserRepository;
+import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
 import java.time.LocalDateTime;

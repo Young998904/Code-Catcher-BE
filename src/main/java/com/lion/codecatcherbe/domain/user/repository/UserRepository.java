@@ -1,4 +1,4 @@
-package com.lion.codecatcherbe.domain.user;
+package com.lion.codecatcherbe.domain.user.repository;
 
 import com.lion.codecatcherbe.domain.user.model.User;
 import java.util.Optional;
