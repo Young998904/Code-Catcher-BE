@@ -15,6 +15,6 @@ public class QuestionRes {
     private String output_1;
     private String input_2;
     private String output_2;
-    private String input_3;
-    private String output_3;
+    private String javaSubmitCode;
+    private String pythonSubmitCode;
 }
