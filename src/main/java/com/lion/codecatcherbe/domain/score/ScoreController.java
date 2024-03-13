@@ -58,4 +58,9 @@ public class ScoreController {
     public ResponseEntity<ScoreSubmitResultRes> SubmitRetryCode(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody ScoreProblemReq scoreProblemReq) {
         return scoreService.getScoreSubmitRetryResult(token, scoreProblemReq);
     }
+
+    @PostMapping("/submit/today")
+    public ResponseEntity<ScoreSubmitResultRes> submitTodayCode(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody ScoreProblemReq scoreProblemReq) {
+        return scoreService.getScoreSubmitTodayResult(token, scoreProblemReq);
+    }
 }
