@@ -16,7 +16,7 @@ public class Submit {
     private String userId;
     private Long problemId;
     @Default
-    private boolean isSuccess = false;
+    private Boolean isSuccess = false;
     @Default
     private String lastSubmitJavaCode = null;
     @Default
@@ -32,5 +32,9 @@ public class Submit {
 
     public void toggleToSuccess() {
         this.isSuccess = true;
+    }
+
+    public boolean isSuccess() {
+        return this.isSuccess;
     }
 }
