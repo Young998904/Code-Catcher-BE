@@ -3,7 +3,7 @@ package com.lion.codecatcherbe.infra.kakao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lion.codecatcherbe.domain.user.UserRepository;
+import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.dto.SocialUserInfoDto;
 import com.lion.codecatcherbe.infra.kakao.dto.SuccessLoginInfo;
