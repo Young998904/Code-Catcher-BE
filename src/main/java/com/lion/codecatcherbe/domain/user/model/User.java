@@ -20,7 +20,15 @@ public class User {
     @Default
     private int level = 1;
 
+    @Default
+    private int exp = 0;
+
     public void setUserName (String newName) {
         this.name = newName;
+    }
+
+    public void setLevAndExp (int level, int exp) {
+        this.level = level;
+        this.exp = exp;
     }
 }
