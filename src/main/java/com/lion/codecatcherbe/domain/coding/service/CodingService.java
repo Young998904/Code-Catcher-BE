@@ -82,9 +82,9 @@ public class CodingService {
         Problem p3 = problemList.get(2);
 
         QuestionListRes questionListRes = QuestionListRes.builder()
-            .question_1(new QuestionInfo(p1.getId(), p1.getLevel(), p1.getTitle(), p1.getSubject(), p1.getScript()))
-            .question_2(new QuestionInfo(p2.getId(), p2.getLevel(), p2.getTitle(), p2.getSubject(), p2.getScript()))
-            .question_3(new QuestionInfo(p3.getId(), p3.getLevel(), p3.getTitle(), p3.getSubject(), p3.getScript()))
+            .question_1(new QuestionInfo(p1.getId(), null, p1.getLevel(), p1.getTitle(), p1.getSubject(), p1.getScript()))
+            .question_2(new QuestionInfo(p2.getId(), null, p2.getLevel(), p2.getTitle(), p2.getSubject(), p2.getScript()))
+            .question_3(new QuestionInfo(p3.getId(), null, p3.getLevel(), p3.getTitle(), p3.getSubject(), p3.getScript()))
             .build();
 
         return new ResponseEntity<>(questionListRes, HttpStatus.OK);
