@@ -153,4 +153,22 @@ public class MyPageService {
 
         return results.getMappedResults();
     }
+
+    public ResponseEntity<List<Achievement>> getAchieveInfo(String token, int year, int month) {
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(findAchievementList(userId, year, month), HttpStatus.OK);
+    }
 }
