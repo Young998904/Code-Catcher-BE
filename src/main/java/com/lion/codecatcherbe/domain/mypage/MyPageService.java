@@ -104,12 +104,12 @@ public class MyPageService {
     private List<Info> findTop4RecentProblemDetails(LocalDateTime signedAt, String userId) {
         // 유저의 createdAt 을 고려해서 하루 전 기준으로 4개를 가지고 와야함
         LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(30);
-        LocalDateTime end = start.plusDays(30).minusSeconds(1);
+        LocalDateTime end = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
 
         // 가입일이 한달 전일 경우 조회 범위 조정
         if (signedAt.isAfter(start)) start = signedAt;
 
-        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(start.plusHours(9)).lte(end.plusHours(9)));
+        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(start).lte(end));
         SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
         ProjectionOperation projectionOperation = Aggregation.project("level", "title", "createdAt").and("_id").as("problemId");
         Aggregation aggregation = Aggregation.newAggregation(matchOperation, sortOperation, projectionOperation, Aggregation.limit(10));
