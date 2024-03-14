@@ -109,10 +109,10 @@ public class MyPageService {
         // 가입일이 한달 전일 경우 조회 범위 조정
         if (signedAt.isAfter(start)) start = signedAt;
 
-        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(start).lte(end));
+        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(start.plusHours(9)).lte(end.plusHours(9)));
         SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
         ProjectionOperation projectionOperation = Aggregation.project("level", "title", "createdAt").and("_id").as("problemId");
-        Aggregation aggregation = Aggregation.newAggregation(matchOperation, sortOperation, projectionOperation, Aggregation.limit(4));
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation, sortOperation, projectionOperation, Aggregation.limit(10));
 
         AggregationResults<Info> results = mongoOperations.aggregate(
             aggregation, "problem", Info.class);
