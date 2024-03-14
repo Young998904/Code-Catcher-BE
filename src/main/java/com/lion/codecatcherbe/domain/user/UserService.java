@@ -1,12 +1,18 @@
 package com.lion.codecatcherbe.domain.user;
 
+import com.lion.codecatcherbe.domain.bookmark.model.Bookmark;
+import com.lion.codecatcherbe.domain.score.model.Submit;
 import com.lion.codecatcherbe.domain.user.dto.NicNameDto;
+import com.lion.codecatcherbe.domain.user.dto.response.UserInfoRes;
 import com.lion.codecatcherbe.domain.user.model.Achieve;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.domain.user.repository.AchieveRepository;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AchieveRepository achieveRepository;
+    private final MongoOperations mongoOperations;
 
     private static final int[] LEVEL_UP_EXPERIENCE = {0, 90, 160, 250, 360};
 
@@ -106,5 +113,44 @@ public class UserService {
         achieve.setCnt(cnt + 1);
 
         achieveRepository.save(achieve);
+    }
+
+    public ResponseEntity<UserInfoRes> getUserInfo(String token) {
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        int totalCnt, completeCnt, bookmarkCnt;
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(user.getId()));
+
+        totalCnt = (int) mongoOperations.count(query, Submit.class);
+        bookmarkCnt = (int) mongoOperations.count(query, Bookmark.class);
+
+        query.addCriteria(Criteria.where("isSuccess").is(true));
+        completeCnt = (int) mongoOperations.count(query, Submit.class);
+
+        UserInfoRes userInfoRes = UserInfoRes.builder()
+            .userId(user.getKakaoId())
+            .nickname(user.getName())
+            .email(user.getEmail())
+            .level(user.getLevel())
+            .exp(user.getExp())
+            .totalCnt(totalCnt)
+            .completeCnt(completeCnt)
+            .bookmarkCnt(bookmarkCnt)
+            .build();
+
+        return new ResponseEntity<>(userInfoRes, HttpStatus.OK);
     }
 }
