@@ -1,5 +1,6 @@
 package com.lion.codecatcherbe.domain.user.model;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class User {
     private final Long kakaoId;
     private final String email;
     private String name;
+    @Default
+    private LocalDateTime createdAt = LocalDateTime.now().plusHours(9L);
     @Default
     private int level = 1;
 
