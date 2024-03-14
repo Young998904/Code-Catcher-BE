@@ -112,7 +112,7 @@ public class MyPageService {
         MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(start).lte(end));
         SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
         ProjectionOperation projectionOperation = Aggregation.project("level", "title", "createdAt").and("_id").as("problemId");
-        Aggregation aggregation = Aggregation.newAggregation(matchOperation, sortOperation, projectionOperation, Aggregation.limit(10));
+        Aggregation aggregation = Aggregation.newAggregation(matchOperation, sortOperation, projectionOperation, Aggregation.limit(4));
 
         AggregationResults<Info> results = mongoOperations.aggregate(
             aggregation, "problem", Info.class);
