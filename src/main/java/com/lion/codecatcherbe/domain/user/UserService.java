@@ -130,6 +130,28 @@ public class UserService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        int[] cntArr = getCnt(user);
+
+        UserInfoRes userInfoRes = UserInfoRes.builder()
+            .userId(user.getKakaoId())
+            .nickname(user.getName())
+            .email(user.getEmail())
+            .level(user.getLevel())
+            .exp(user.getExp())
+            .expUpper(LEVEL_UP_EXPERIENCE[user.getLevel()])
+            .totalCnt(cntArr[0])
+            .completeCnt(cntArr[1])
+            .bookmarkCnt(cntArr[2])
+            .build();
+
+        return new ResponseEntity<>(userInfoRes, HttpStatus.OK);
+    }
+
+    public int getExpUpper(int level) {
+        return LEVEL_UP_EXPERIENCE[level];
+    }
+
+    public int[] getCnt(User user) {
         int totalCnt, completeCnt, bookmarkCnt;
         Query query = new Query();
         query.addCriteria(Criteria.where("userId").is(user.getId()));
@@ -140,18 +162,6 @@ public class UserService {
         query.addCriteria(Criteria.where("isSuccess").is(true));
         completeCnt = (int) mongoOperations.count(query, Submit.class);
 
-        UserInfoRes userInfoRes = UserInfoRes.builder()
-            .userId(user.getKakaoId())
-            .nickname(user.getName())
-            .email(user.getEmail())
-            .level(user.getLevel())
-            .exp(user.getExp())
-            .expUpper(LEVEL_UP_EXPERIENCE[user.getLevel()])
-            .totalCnt(totalCnt)
-            .completeCnt(completeCnt)
-            .bookmarkCnt(bookmarkCnt)
-            .build();
-
-        return new ResponseEntity<>(userInfoRes, HttpStatus.OK);
+        return new int[]{totalCnt, completeCnt, bookmarkCnt};
     }
 }
