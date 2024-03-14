@@ -146,6 +146,7 @@ public class UserService {
             .email(user.getEmail())
             .level(user.getLevel())
             .exp(user.getExp())
+            .expUpper(LEVEL_UP_EXPERIENCE[user.getLevel()])
             .totalCnt(totalCnt)
             .completeCnt(completeCnt)
             .bookmarkCnt(bookmarkCnt)
