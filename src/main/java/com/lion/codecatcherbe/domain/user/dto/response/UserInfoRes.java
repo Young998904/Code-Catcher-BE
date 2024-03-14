@@ -1,14 +1,15 @@
-package com.lion.codecatcherbe.infra.kakao.dto;
+package com.lion.codecatcherbe.domain.user.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@Data
 @Builder
-public class SuccessLoginInfo {
-    private String jwt;
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserInfoRes {
     private Long userId;
     private String nickname;
     private String email;

@@ -3,6 +3,7 @@ package com.lion.codecatcherbe.infra.kakao;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lion.codecatcherbe.domain.user.UserService;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.dto.SocialUserInfoDto;
@@ -29,6 +30,7 @@ public class KakaoService {
     @Value("${oauth.kakao.url.host}")
     private String REDIRECT_HOST;
 
+    private final UserService userService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
@@ -52,6 +54,11 @@ public class KakaoService {
             .userId(kakaoUser.getKakaoId())
             .email(kakaoUser.getEmail())
             .level(kakaoUser.getLevel())
+            .exp(kakaoUser.getExp())
+            .expUpper(userService.getExpUpper(kakaoUser.getLevel()))
+            .totalCnt(userService.getCnt(kakaoUser)[0])
+            .completeCnt(userService.getCnt(kakaoUser)[1])
+            .bookmarkCnt(userService.getCnt(kakaoUser)[2])
             .build();
     }
 
