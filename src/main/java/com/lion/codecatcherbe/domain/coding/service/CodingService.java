@@ -1,7 +1,6 @@
 package com.lion.codecatcherbe.domain.coding.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lion.codecatcherbe.domain.coding.dto.request.GPTFeedBackReq;
 import com.lion.codecatcherbe.domain.coding.dto.response.GPTFeedBackResultRes;
 import com.lion.codecatcherbe.domain.coding.dto.response.QuestionListRes;
 import com.lion.codecatcherbe.domain.coding.dto.response.QuestionListRes.QuestionInfo;
@@ -186,14 +185,14 @@ public class CodingService {
         return mongoOperations.find(query, Problem.class);
     }
 
-    public ResponseEntity<GPTFeedBackResultRes> getGPTCode(GPTFeedBackReq gptFeedBackReq) {
-        Problem p = problemRepository.findById(gptFeedBackReq.getProblemId()).orElse(null);
+    public ResponseEntity<GPTFeedBackResultRes> getGPTCode(Long problemId, String codeType) {
+        Problem p = problemRepository.findById(problemId).orElse(null);
 
         if (p == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (gptFeedBackReq.getCodeType().equals("java")) {
+        if (codeType.equals("java")) {
             return new ResponseEntity<>(new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain()), HttpStatus.OK);
         }
         else {

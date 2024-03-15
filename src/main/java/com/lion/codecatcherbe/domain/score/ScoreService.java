@@ -65,8 +65,6 @@ public class ScoreService {
         RestTemplate rt = new RestTemplate();
         String url = REDIRECT_HOST + "/" + type;
 
-        System.out.println(url);
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -181,6 +179,7 @@ public class ScoreService {
         if (isFirst) { // 최초 정답일 경우 리워드 처리
             userService.addExp(user);
             userService.addAchieve(achieve);
+            scoreSubmitResultRes.setFirst(true);
         }
         // (4) Submit 생성 or 갱신 처리
         if (submit == null) { // 최초 제출인 경우
