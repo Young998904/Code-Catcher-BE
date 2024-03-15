@@ -1,7 +1,8 @@
 package com.lion.codecatcherbe.domain.mypage;
 
 import com.lion.codecatcherbe.domain.mypage.MyPageInfoRes.Achievement;
-import com.lion.codecatcherbe.domain.mypage.MyPageInfoRes.Info;
+import com.lion.codecatcherbe.domain.mypage.MyPageInfoRes.BookmarkInfo;
+import com.lion.codecatcherbe.domain.mypage.MyPageInfoRes.ProblemInfo;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
@@ -69,10 +70,10 @@ public class MyPageService {
         }
 
         // 북마크 최근 4개 리스트 가져오기
-        List<Info> bookmarkDetails = findTop4RecentBookmarkDetails(userId);
+        List<BookmarkInfo> bookmarkDetails = findTop4RecentBookmarkDetails(userId);
 
         // 지난 테스트 문제 최근 4개 리스트 가져오기
-        List<Info> problemDetails = findTop4RecentProblemDetails(user.getCreatedAt().truncatedTo(ChronoUnit.DAYS), userId);
+        List<ProblemInfo> problemDetails = findTop4RecentProblemDetails(user.getCreatedAt().truncatedTo(ChronoUnit.DAYS), userId);
 
         // 해당 년,월 월간 달성률 리스트 가져오기
         List<Achievement> achievementList = findAchievementList(userId, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue());
@@ -101,7 +102,7 @@ public class MyPageService {
         return results.getMappedResults();
     }
 
-    private List<Info> findTop4RecentProblemDetails(LocalDateTime signedAt, String userId) {
+    private List<ProblemInfo> findTop4RecentProblemDetails(LocalDateTime signedAt, String userId) {
         // 유저의 createdAt 을 고려해서 하루 전 기준으로 4개를 가지고 와야함
         LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(30);
         LocalDateTime end = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
@@ -114,12 +115,12 @@ public class MyPageService {
         ProjectionOperation projectionOperation = Aggregation.project("level", "title", "createdAt").and("_id").as("problemId");
         Aggregation aggregation = Aggregation.newAggregation(matchOperation, sortOperation, projectionOperation, Aggregation.limit(4));
 
-        AggregationResults<Info> results = mongoOperations.aggregate(
-            aggregation, "problem", Info.class);
+        AggregationResults<ProblemInfo> results = mongoOperations.aggregate(
+            aggregation, "problem", ProblemInfo.class);
 
         return results.getMappedResults();
     }
-    public List<Info> findTop4RecentBookmarkDetails (String userId) {
+    public List<BookmarkInfo> findTop4RecentBookmarkDetails (String userId) {
         // 조회 조건 설정
         MatchOperation matchOperation = Aggregation.match(Criteria.where("userId").is(userId));
         // 조인 조건 설정
@@ -135,7 +136,8 @@ public class MyPageService {
             .and("problemInfo.level").as("level")
             .and("problemInfo._id").as("problemId")
             .and("problemInfo.title").as("title")
-            .and("createdAt").as("createdAt");
+            .and("createdAt").as("createdAt")
+            .and("_id").as("bookmarkId");
         // 정렬 조건 설정
         SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
         // Aggregation 생성 및 limit 설정
@@ -148,8 +150,8 @@ public class MyPageService {
             Aggregation.limit(4)
         );
         // 실행
-        AggregationResults<Info> results = mongoOperations.aggregate(
-            aggregation, "bookmark", Info.class);
+        AggregationResults<BookmarkInfo> results = mongoOperations.aggregate(
+            aggregation, "bookmark", BookmarkInfo.class);
 
         return results.getMappedResults();
     }

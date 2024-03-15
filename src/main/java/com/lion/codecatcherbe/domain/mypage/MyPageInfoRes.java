@@ -14,13 +14,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class MyPageInfoRes {
-    List<Info> bookmarkInfo;
-    List<Info> problemInfo;
+    List<BookmarkInfo> bookmarkInfo;
+    List<ProblemInfo> problemInfo;
     List<Achievement> achieveInfo;
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Info {
+    public static class ProblemInfo {
+        private Long level;
+        private Long problemId;
+        private String title;
+        private Date createdAt;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BookmarkInfo {
+        private String bookmarkId;
         private Long level;
         private Long problemId;
         private String title;
