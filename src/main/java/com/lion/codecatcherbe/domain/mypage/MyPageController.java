@@ -1,8 +1,12 @@
 package com.lion.codecatcherbe.domain.mypage;
 
-import com.lion.codecatcherbe.domain.mypage.MyPageInfoRes.Achievement;
+import com.lion.codecatcherbe.domain.mypage.dto.BookmarkMoreInfoRes;
+import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes;
+import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes.Achievement;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -25,5 +29,10 @@ public class MyPageController {
     @GetMapping("/achievement")
     public ResponseEntity<List<Achievement>> getAchieveInfo(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam int year, @RequestParam int month) {
         return myPageService.getAchieveInfo(token, year, month);
+    }
+
+    @GetMapping("/bookmark")
+    public ResponseEntity<BookmarkMoreInfoRes> getMoreBookmarkList (@RequestHeader(value = "Authorization", required = false) String token, @RequestParam (defaultValue = "0") int page) {
+        return myPageService.getBookmarkList(token, page);
     }
 }
