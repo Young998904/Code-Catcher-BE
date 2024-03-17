@@ -1,7 +1,5 @@
-package com.lion.codecatcherbe.domain.mypage;
+package com.lion.codecatcherbe.domain.mypage.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
