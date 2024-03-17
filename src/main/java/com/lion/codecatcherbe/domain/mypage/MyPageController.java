@@ -3,6 +3,7 @@ package com.lion.codecatcherbe.domain.mypage;
 import com.lion.codecatcherbe.domain.mypage.dto.BookmarkMoreInfoRes;
 import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes;
 import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes.Achievement;
+import com.lion.codecatcherbe.domain.mypage.dto.ProblemMoreInfoRes;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -34,5 +35,10 @@ public class MyPageController {
     @GetMapping("/bookmark")
     public ResponseEntity<BookmarkMoreInfoRes> getMoreBookmarkList (@RequestHeader(value = "Authorization", required = false) String token, @RequestParam (defaultValue = "0") int page) {
         return myPageService.getBookmarkList(token, page);
+    }
+
+    @GetMapping("question")
+    public ResponseEntity<ProblemMoreInfoRes> getMoreQuestionList (@RequestHeader(value = "Authorization", required = false) String token, @RequestParam (defaultValue = "0") int page) {
+        return myPageService.getProblemList(token, page);
     }
 }

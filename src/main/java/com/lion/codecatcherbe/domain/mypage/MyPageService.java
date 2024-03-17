@@ -6,6 +6,8 @@ import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes;
 import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes.Achievement;
 import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes.BookmarkInfo;
 import com.lion.codecatcherbe.domain.mypage.dto.MyPageInfoRes.ProblemInfo;
+import com.lion.codecatcherbe.domain.mypage.dto.ProblemMoreInfoRes;
+import com.lion.codecatcherbe.domain.mypage.dto.ProblemMoreInfoRes.ProblemMoreInfo;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
@@ -252,6 +254,66 @@ public class MyPageService {
         // 실행
         AggregationResults<BookmarkMoreInfo> results = mongoOperations.aggregate(
             aggregation, "bookmark", BookmarkMoreInfo.class);
+
+        return results.getMappedResults();
+    }
+
+    public ResponseEntity<ProblemMoreInfoRes> getProblemList(String token, int page) {
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Pageable pageable = PageRequest.of(page, 10);
+        List<ProblemMoreInfo> problemMoreInfoResList = findMoreProblemDetails(userId, pageable);
+
+        Query query = new Query();
+        long total = mongoOperations.count(query,"problem");
+
+        ProblemMoreInfoRes problemMoreInfoRes = ProblemMoreInfoRes.builder()
+            .questionData(problemMoreInfoResList)
+            .currentPage(page)
+            .totalPage((int) Math.ceil((double) total / 10) -1)
+            .build();
+
+        return new ResponseEntity<>(problemMoreInfoRes, HttpStatus.OK);
+    }
+
+    private List<ProblemMoreInfo> findMoreProblemDetails(String userId, Pageable pageable) {
+        LocalDateTime end = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
+        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").lte(end));
+        LookupOperationWithPipeline lookupOperation = new LookupOperationWithPipeline("submit", "_id", "submits", userId);
+        UnwindOperation unwindOperation = Aggregation.unwind("submits", true);
+        SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
+        ProjectionOperation projectionOperation = Aggregation.project()
+            .and("level").as("level")
+            .and("_id").as("problemId")
+            .and("title").as("title")
+            .and("subject").as("subject")
+            .and("createdAt").as("createdAt")
+            .and("submits.isSuccess").as("status");
+        long skip = pageable.getOffset();
+        long limit = pageable.getPageSize();
+        Aggregation aggregation = Aggregation.newAggregation(
+            matchOperation,
+            lookupOperation,
+            unwindOperation,
+            projectionOperation,
+            sortOperation,
+            Aggregation.skip(skip),
+            Aggregation.limit(limit)
+        );
+        AggregationResults<ProblemMoreInfo> results = mongoOperations.aggregate(
+            aggregation, "problem", ProblemMoreInfo.class);
 
         return results.getMappedResults();
     }
