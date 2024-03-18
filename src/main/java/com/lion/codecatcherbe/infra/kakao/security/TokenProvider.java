@@ -40,7 +40,7 @@ public class TokenProvider {
         Key key = Keys.hmacShaKeyFor(keyBytes);
 
         long now = new Date().getTime();
-        Date validity = new Date(now + this.tokenValidityInSeconds);
+        Date validity = new Date(now + this.tokenValidityInSeconds*100);
 
         return Jwts.builder()
             .setSubject(user.getId())
