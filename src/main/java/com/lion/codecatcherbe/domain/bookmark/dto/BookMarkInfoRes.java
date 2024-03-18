@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class BookMarkInfoRes {
     // Bookmark 에서 가져올 값
     private String myCode;
+    private String codeType;
 
     // Problem 에서 가져올 값
     private String title;
