@@ -217,7 +217,7 @@ public class MyPageService {
         return new ResponseEntity<>(bookmarkMoreInfoRes, HttpStatus.OK);
     }
 
-    private List<BookmarkMoreInfo> findMoreBookmarkDetails(String userId, Pageable pageable) {
+    public List<BookmarkMoreInfo> findMoreBookmarkDetails(String userId, Pageable pageable) {
         // 조회 조건 설정
         MatchOperation matchOperation = Aggregation.match(Criteria.where("userId").is(userId));
         // 조인 조건 설정
