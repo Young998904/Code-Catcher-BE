@@ -20,6 +20,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
     @Value("${cors.allowedOrigin}")
     String allowedOrigin;
+    @Value("${cors.allowedDeploy}")
+    String allowedDeploy;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -41,6 +43,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration= new CorsConfiguration();
         configuration.addAllowedOrigin(allowedOrigin);
+        configuration.addAllowedOrigin(allowedDeploy);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS","DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
