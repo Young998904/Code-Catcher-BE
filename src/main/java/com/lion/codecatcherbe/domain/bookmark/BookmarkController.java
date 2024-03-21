@@ -1,8 +1,9 @@
 package com.lion.codecatcherbe.domain.bookmark;
 
-import com.lion.codecatcherbe.domain.bookmark.dto.BookMarkDeleteRes;
-import com.lion.codecatcherbe.domain.bookmark.dto.BookMarkInfoRes;
-import com.lion.codecatcherbe.domain.bookmark.dto.BookMarkReq;
+import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkDeleteRes;
+import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkInfoRes;
+import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkReq;
+import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkRecordRes;
 import com.lion.codecatcherbe.domain.mypage.dto.BookmarkMoreInfoRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,11 @@ public class BookmarkController {
     @GetMapping()
     public ResponseEntity<BookMarkInfoRes> findBookmark(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam (name = "id") String bookmarkId) {
         return bookmarkService.findBookmarkInfo(token, bookmarkId);
+    }
+
+    @GetMapping("/record")
+    public ResponseEntity<BookMarkRecordRes> findBookmarkRecord (@RequestHeader(value = "Authorization", required = false) String token, @RequestParam (name = "problemId") Long problemId) {
+        return bookmarkService.findBookmarkRecord(token, problemId);
     }
 
     @DeleteMapping("/one")

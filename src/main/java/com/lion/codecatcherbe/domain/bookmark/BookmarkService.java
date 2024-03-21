@@ -1,8 +1,9 @@
 package com.lion.codecatcherbe.domain.bookmark;
 
-import com.lion.codecatcherbe.domain.bookmark.dto.BookMarkDeleteRes;
-import com.lion.codecatcherbe.domain.bookmark.dto.BookMarkInfoRes;
-import com.lion.codecatcherbe.domain.bookmark.dto.BookMarkReq;
+import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkDeleteRes;
+import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkInfoRes;
+import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkReq;
+import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkRecordRes;
 import com.lion.codecatcherbe.domain.bookmark.model.Bookmark;
 import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
@@ -210,5 +211,34 @@ public class BookmarkService {
             .build();
 
         return new ResponseEntity<>(bookmarkMoreInfoRes, HttpStatus.OK);
+    }
+
+    public ResponseEntity<BookMarkRecordRes> findBookmarkRecord(String token, Long problemId) {
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndProblemId(userId, problemId).orElse(null);
+
+        if (bookmark == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        BookMarkRecordRes bookMarkRecordRes = BookMarkRecordRes.builder()
+            .bookmarkId(bookmark.getId())
+            .createdAt(bookmark.getCreatedAt())
+            .build();
+
+        return new ResponseEntity<>(bookMarkRecordRes, HttpStatus.OK);
     }
 }
