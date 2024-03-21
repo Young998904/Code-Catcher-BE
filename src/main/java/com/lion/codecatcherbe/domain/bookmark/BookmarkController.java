@@ -1,5 +1,6 @@
 package com.lion.codecatcherbe.domain.bookmark;
 
+import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkUpdateReq;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkDeleteRes;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkInfoRes;
 import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkReq;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -45,5 +47,10 @@ public class BookmarkController {
     @DeleteMapping("/many")
     public ResponseEntity<BookmarkMoreInfoRes> deleteManyBookmark (@RequestHeader(value = "Authorization", required = false) String token, @RequestBody BookMarkDeleteRes bookMarkDeleteRes) {
         return bookmarkService.deleteManyBookmark(token, bookMarkDeleteRes);
+    }
+
+    @PatchMapping()
+    public HttpStatus updateBookmark(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam (name="id") String bookmarkId, @RequestBody BookMarkUpdateReq bookMarkUpdateReq) {
+        return bookmarkService.updateBookmark(token, bookmarkId, bookMarkUpdateReq);
     }
 }

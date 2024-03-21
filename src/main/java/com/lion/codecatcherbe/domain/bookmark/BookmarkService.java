@@ -1,5 +1,6 @@
 package com.lion.codecatcherbe.domain.bookmark;
 
+import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkUpdateReq;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkDeleteRes;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkInfoRes;
 import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkReq;
@@ -240,5 +241,33 @@ public class BookmarkService {
             .build();
 
         return new ResponseEntity<>(bookMarkRecordRes, HttpStatus.OK);
+    }
+
+    public HttpStatus updateBookmark(String token, String bookmarkId, BookMarkUpdateReq bookMarkUpdateReq) {
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return HttpStatus.UNAUTHORIZED;
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return HttpStatus.NOT_FOUND;
+        }
+
+        Bookmark bookmark = bookmarkRepository.findById(bookmarkId).orElse(null);
+
+        if (bookmark == null) {
+            return HttpStatus.NOT_FOUND;
+        }
+
+        bookmark.updateBook(LocalDateTime.now().plusHours(9L), bookMarkUpdateReq.getMyCode(), bookMarkUpdateReq.getCodeType());
+
+        bookmarkRepository.save(bookmark);
+
+        return HttpStatus.OK;
     }
 }
