@@ -1,4 +1,4 @@
-package com.lion.codecatcherbe.domain.bookmark.dto;
+package com.lion.codecatcherbe.domain.bookmark.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

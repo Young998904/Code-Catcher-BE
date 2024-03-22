@@ -18,4 +18,10 @@ public class Bookmark {
     private LocalDateTime createdAt;
     private String code;
     private String codeType;
+
+    public void updateBook(LocalDateTime createdAt, String code, String codeType) {
+        this.createdAt = createdAt;
+        this.code = code;
+        this.codeType = codeType;
+    }
 }

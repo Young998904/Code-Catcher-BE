@@ -1,4 +1,4 @@
-package com.lion.codecatcherbe.domain.bookmark.dto;
+package com.lion.codecatcherbe.domain.bookmark.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
