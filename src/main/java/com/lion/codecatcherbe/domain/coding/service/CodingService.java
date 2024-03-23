@@ -9,6 +9,7 @@ import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
 import com.lion.codecatcherbe.domain.score.model.Submit;
 import com.lion.codecatcherbe.domain.score.repository.SubmitRepository;
+import com.lion.codecatcherbe.domain.test.ProblemGenRes;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
@@ -198,5 +199,31 @@ public class CodingService {
         else {
             return new ResponseEntity<>(new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain()), HttpStatus.OK);
         }
+    }
+
+    public HttpStatus genProblem(ProblemGenRes problemGenRes) {
+        Problem p = Problem.builder()
+            .title(problemGenRes.getTitle())
+            .script(problemGenRes.getScript())
+            .input_condition(problemGenRes.getInput_condition())
+            .output_condition(problemGenRes.getOutput_condition())
+            .input_1(problemGenRes.getInput_1())
+            .output_1(problemGenRes.getOutput_1())
+            .input_2(problemGenRes.getInput_2())
+            .output_2(problemGenRes.getOutput_2())
+            .input_3(problemGenRes.getInput_3())
+            .output_3(problemGenRes.getOutput_3())
+            .python_code(problemGenRes.getPython_code())
+            .java_code(problemGenRes.getJava_code())
+            .python_explain(problemGenRes.getPython_explain())
+            .java_explain(problemGenRes.getJava_explain())
+            .build();
+
+        p.setCreatedAt(LocalDateTime.now().plusHours(9L));
+        p.setId(sequenceGeneratorService.generateSequence(Problem.SEQUENCE_NAME));
+
+        problemRepository.save(p);
+
+        return HttpStatus.CREATED;
     }
 }
