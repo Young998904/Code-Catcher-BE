@@ -6,7 +6,7 @@ import com.lion.codecatcherbe.domain.coding.dto.response.QuestionListRes.Questio
 import com.lion.codecatcherbe.domain.coding.dto.response.QuestionRes;
 import com.lion.codecatcherbe.domain.coding.service.CodingService;
 import com.lion.codecatcherbe.domain.coding.dto.response.GPTFeedBackResultRes;
-import com.lion.codecatcherbe.domain.test.ProblemGenRes;
+import com.lion.codecatcherbe.domain.coding.dto.response.ProblemGenRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

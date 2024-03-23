@@ -9,7 +9,7 @@ import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
 import com.lion.codecatcherbe.domain.score.model.Submit;
 import com.lion.codecatcherbe.domain.score.repository.SubmitRepository;
-import com.lion.codecatcherbe.domain.test.ProblemGenRes;
+import com.lion.codecatcherbe.domain.coding.dto.response.ProblemGenRes;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
