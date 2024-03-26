@@ -81,7 +81,7 @@ public class MyPageService {
         List<BookmarkInfo> bookmarkDetails = findTop4RecentBookmarkDetails(userId);
 
         // 지난 테스트 문제 최근 4개 리스트 가져오기
-        List<ProblemInfo> problemDetails = findTop4RecentProblemDetails(user.getCreatedAt().truncatedTo(ChronoUnit.DAYS), userId);
+        List<ProblemInfo> problemDetails = findTop4RecentProblemDetails(user.getCreatedAt().truncatedTo(ChronoUnit.DAYS).plusHours(9L), userId);
 
         // 해당 년,월 월간 달성률 리스트 가져오기
         List<Achievement> achievementList = findAchievementList(userId, LocalDateTime.now().getYear(), LocalDateTime.now().getMonthValue());
@@ -96,9 +96,11 @@ public class MyPageService {
     }
 
     private List<Achievement> findAchievementList(String userId, int year, int month) {
+        LocalDateTime start = LocalDate.of(year, month, 1).atStartOfDay().plusHours(9L);
+        LocalDateTime end = LocalDate.of(year, month, 1).plusMonths(1).atStartOfDay().plusHours(9L).minusSeconds(1L);
+
         MatchOperation matchOperation = Aggregation.match(Criteria
-            .where("createdAt").gte(LocalDate.of(year, month, 1).atStartOfDay()).
-            lt(LocalDate.of(year, month, 1).plusMonths(1).atStartOfDay())
+            .where("createdAt").gte(start).lt(end)
             .and("userId").is(userId));
         SortOperation sortOperation = Aggregation.sort(Sort.by(Direction.ASC, "createdAt"));
         ProjectionOperation projectionOperation = Aggregation.project("cnt", "createdAt");
@@ -112,8 +114,8 @@ public class MyPageService {
 
     private List<ProblemInfo> findTop4RecentProblemDetails(LocalDateTime signedAt, String userId) {
         // 유저의 createdAt 을 고려해서 하루 전 기준으로 4개를 가지고 와야함
-        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(30);
-        LocalDateTime end = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
+        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusDays(30).plusHours((9L));
+        LocalDateTime end = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusHours(9L).minusSeconds(1);
 
         // 가입일이 한달 전일 경우 조회 범위 조정
         if (signedAt.isAfter(start)) start = signedAt;
@@ -289,7 +291,7 @@ public class MyPageService {
     }
 
     private List<ProblemMoreInfo> findMoreProblemDetails(String userId, Pageable pageable) {
-        LocalDateTime end = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
+        LocalDateTime end = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusHours(9L).minusSeconds(1);
         MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").lte(end));
         LookupOperationWithPipeline lookupOperation = new LookupOperationWithPipeline("submit", "_id", "submits", userId);
         UnwindOperation unwindOperation = Aggregation.unwind("submits", true);
