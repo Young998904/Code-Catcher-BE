@@ -135,7 +135,7 @@ public class CodingService {
     public ResponseEntity<QuestionListRes> findProblemList(String token) {
         // 오늘 날짜를 가져오고 끝날짜를 24시간 뒤로 설정하여 문제의 정보를 가지고 옴
         LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS);
-        List<Problem> problemList = findProblemsByCreatedAt(start, start.plusHours(24L));
+        List<Problem> problemList = findProblemsByCreatedAt(start.plusHours(9L), start.plusDays(1L).plusHours(9L).minusSeconds(1L));
 
         // 레벨 순으로 정렬
         problemList.sort(Comparator.comparingLong(Problem::getLevel));
