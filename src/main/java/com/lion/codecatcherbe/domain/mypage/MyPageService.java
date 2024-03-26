@@ -276,7 +276,7 @@ public class MyPageService {
         }
 
         Pageable pageable = PageRequest.of(page, 10);
-        List<ProblemMoreInfo> problemMoreInfoResList = findMoreProblemDetails(userId, pageable);
+        List<ProblemMoreInfo> problemMoreInfoResList = findMoreProblemDetails(userId, user.getCreatedAt().truncatedTo(ChronoUnit.DAYS), pageable);
 
         Query query = new Query();
         long total = mongoOperations.count(query,"problem");
@@ -290,9 +290,9 @@ public class MyPageService {
         return new ResponseEntity<>(problemMoreInfoRes, HttpStatus.OK);
     }
 
-    private List<ProblemMoreInfo> findMoreProblemDetails(String userId, Pageable pageable) {
+    private List<ProblemMoreInfo> findMoreProblemDetails(String userId, LocalDateTime signedIn, Pageable pageable) {
         LocalDateTime end = LocalDateTime.now().plusHours(9L).truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
-        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").lte(end));
+        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(signedIn).lte(end));
         LookupOperationWithPipeline lookupOperation = new LookupOperationWithPipeline("submit", "_id", "submits", userId);
         UnwindOperation unwindOperation = Aggregation.unwind("submits", true);
         SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
