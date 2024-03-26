@@ -151,7 +151,7 @@ public class ScoreService {
         ScoreSubmitResultRes scoreSubmitResultRes = getScoreSubmitResult(scoreProblemReq);
 
         // (2) 제출을 하긴 했으므로 달성률 객체 생성 or 가져오기
-        LocalDateTime start = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).plusHours(9L);
+        LocalDateTime start = LocalDateTime.now().plusHours(9L).truncatedTo(ChronoUnit.DAYS);
         LocalDateTime end = start.plusHours(24L).minusSeconds(1L);
         Achieve achieve = achieveRepository.findByUserIdAndCreatedAtBetween(userId, start, end).orElse(null);
 
