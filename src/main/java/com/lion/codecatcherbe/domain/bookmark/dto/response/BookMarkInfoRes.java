@@ -15,6 +15,7 @@ public class BookMarkInfoRes {
     private String codeType;
 
     // Problem 에서 가져올 값
+    private Long level;
     private String title;
     private String subject;
     private String script;

@@ -132,6 +132,7 @@ public class BookmarkService {
         }
 
         BookMarkInfoRes bookMarkInfoRes = BookMarkInfoRes.builder()
+            .level(problem.getLevel())
             .myCode(bookmark.getCode())
             .codeType(codeType)
             .title(problem.getTitle())
