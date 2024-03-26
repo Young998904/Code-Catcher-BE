@@ -115,6 +115,7 @@ public class CodingService {
 
 
         QuestionRes questionRes = QuestionRes.builder()
+            .level(problem.getLevel())
             .title(problem.getTitle())
             .subject(problem.getSubject())
             .script(problem.getScript())

@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class QuestionRes {
+    private Long level;
     private String title;
     private String subject;
     private String script;
