@@ -11,4 +11,6 @@ public interface SubmitRepository extends MongoRepository<Submit, String> {
 
     @Query(value="{ 'userId' : ?0, 'problemId' : ?1 }", fields="{ 'isSuccess' : 1, '_id': 0 }")
     Optional<Submit> findIsSuccessByUserIdAndProblemId(String userId, Long problemId);
+
+    void deleteAllByUserId(String userId);
 }
