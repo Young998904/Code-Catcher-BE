@@ -123,7 +123,7 @@ public class CodingService {
             .output_condition(problem.getOutput_condition())
             .input_1(problem.getInput_1())
             .output_1(problem.getOutput_1())
-            .input_2(problem.getOutput_2())
+            .input_2(problem.getInput_2())
             .output_2(problem.getOutput_2())
             .javaSubmitCode(javaCode)
             .pythonSubmitCode(pythonCode)
