@@ -1,7 +1,9 @@
 package com.lion.codecatcherbe.domain.user;
 
+import com.lion.codecatcherbe.domain.bookmark.BookmarkRepository;
 import com.lion.codecatcherbe.domain.bookmark.model.Bookmark;
 import com.lion.codecatcherbe.domain.score.model.Submit;
+import com.lion.codecatcherbe.domain.score.repository.SubmitRepository;
 import com.lion.codecatcherbe.domain.user.dto.NicNameDto;
 import com.lion.codecatcherbe.domain.user.dto.response.UserInfoRes;
 import com.lion.codecatcherbe.domain.user.model.Achieve;
@@ -23,6 +25,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AchieveRepository achieveRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final SubmitRepository submitRepository;
     private final MongoOperations mongoOperations;
 
     private static final int[] LEVEL_UP_EXPERIENCE = {0, 90, 160, 250, 360};
@@ -86,6 +90,9 @@ public class UserService {
         }
 
         userRepository.delete(user);
+        bookmarkRepository.deleteAllByUserId(userId);
+        submitRepository.deleteAllByUserId(userId);
+        achieveRepository.deleteAllByUserId(userId);
 
         return HttpStatus.OK;
     }
