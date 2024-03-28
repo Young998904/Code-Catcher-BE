@@ -13,10 +13,13 @@ import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +31,7 @@ public class UserService {
     private final BookmarkRepository bookmarkRepository;
     private final SubmitRepository submitRepository;
     private final MongoOperations mongoOperations;
+    private final MongoTemplate mongoTemplate;
 
     private static final int[] LEVEL_UP_EXPERIENCE = {0, 90, 160, 250, 360};
 
@@ -170,5 +174,23 @@ public class UserService {
         completeCnt = (int) mongoOperations.count(query, Submit.class);
 
         return new int[]{totalCnt, completeCnt, bookmarkCnt};
+    }
+
+    @Scheduled(cron = "0 00 15 * * ?")
+    public void userIsUsedUpdate () {
+        Update update = new Update().set("isUsed", false);
+        mongoTemplate.updateMulti(new Query(), update, User.class);
+    }
+
+    public void isUsedToTrue(String token) {
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        user.toggleIsUsed();
+
+        userRepository.save(user);
     }
 }

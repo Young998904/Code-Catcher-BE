@@ -5,6 +5,7 @@ import com.lion.codecatcherbe.domain.coding.dto.response.ProblemGenRes;
 import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
 import com.lion.codecatcherbe.domain.coding.service.SequenceGeneratorService;
+import com.lion.codecatcherbe.domain.user.UserService;
 import com.lion.codecatcherbe.infra.gpt.dto.request.CodeReviewReq;
 import com.lion.codecatcherbe.infra.gpt.dto.response.GPTReviewRes;
 import com.lion.codecatcherbe.infra.gpt.prompt.ReviewPrompt;
@@ -26,9 +27,10 @@ import org.springframework.stereotype.Service;
 public class GPTService {
 
     private final SequenceGeneratorService sequenceGeneratorService;
+    private final UserService userService;
     private final ProblemRepository problemRepository;
     private final AiClient client;
-    public ResponseEntity<GPTReviewRes> getGptFeedback(CodeReviewReq codeReviewReq) {
+    public ResponseEntity<GPTReviewRes> getGptFeedback(String token, CodeReviewReq codeReviewReq) {
         String myCode = codeReviewReq.getMyCode();
         Long problemId = codeReviewReq.getProblemId();
 
@@ -65,6 +67,8 @@ public class GPTService {
         Gson gson = new Gson();
 
         GPTReviewRes gptReviewRes = gson.fromJson(jsonString, GPTReviewRes.class);
+
+        userService.isUsedToTrue(token);
 
         // 객체 반환
         return new ResponseEntity<>(gptReviewRes, HttpStatus.OK);

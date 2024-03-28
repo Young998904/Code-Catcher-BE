@@ -22,9 +22,10 @@ public class User {
     private LocalDateTime createdAt = LocalDateTime.now().plusHours(9L);
     @Default
     private int level = 1;
-
     @Default
     private int exp = 0;
+    @Default
+    private boolean isUsed = false;
 
     public void setUserName (String newName) {
         this.name = newName;
@@ -33,5 +34,9 @@ public class User {
     public void setLevAndExp (int level, int exp) {
         this.level = level;
         this.exp = exp;
+    }
+
+    public void toggleIsUsed() {
+        this.isUsed = true;
     }
 }
