@@ -14,7 +14,9 @@ import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -276,10 +278,11 @@ public class MyPageService {
         }
 
         Pageable pageable = PageRequest.of(page, 10);
-        List<ProblemMoreInfo> problemMoreInfoResList = findMoreProblemDetails(userId, user.getCreatedAt().truncatedTo(ChronoUnit.DAYS), pageable);
 
-        Query query = new Query();
-        long total = mongoOperations.count(query,"problem");
+        Map<String, Object> problemInfo = findMoreProblemDetails(userId, user.getCreatedAt().truncatedTo(ChronoUnit.DAYS), pageable);
+
+        List<ProblemMoreInfo> problemMoreInfoResList = (List<ProblemMoreInfo>) problemInfo.get("problemMoreInfoRes");
+        long total =(long) problemInfo.get("total");
 
         ProblemMoreInfoRes problemMoreInfoRes = ProblemMoreInfoRes.builder()
             .questionData(problemMoreInfoResList)
@@ -290,9 +293,16 @@ public class MyPageService {
         return new ResponseEntity<>(problemMoreInfoRes, HttpStatus.OK);
     }
 
-    private List<ProblemMoreInfo> findMoreProblemDetails(String userId, LocalDateTime signedIn, Pageable pageable) {
+    private  Map<String, Object> findMoreProblemDetails(String userId, LocalDateTime signedAt, Pageable pageable) {
+
+        // 유저의 가입일을 고려해서 하루 전 기준으로 한달치를 가지고 와야함
+        LocalDateTime start = LocalDateTime.now().plusHours(9L).truncatedTo(ChronoUnit.DAYS).minusDays(30);
         LocalDateTime end = LocalDateTime.now().plusHours(9L).truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
-        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(signedIn).lte(end));
+
+        // 가입일이 한달이 되지 않았일 경우 가입일을 시작 조회 범위로 조정
+        if (signedAt.isAfter(start)) start = signedAt;
+
+        MatchOperation matchOperation = Aggregation.match(Criteria.where("createdAt").gte(start).lte(end));
         LookupOperationWithPipeline lookupOperation = new LookupOperationWithPipeline("submit", "_id", "submits", userId);
         UnwindOperation unwindOperation = Aggregation.unwind("submits", true);
         SortOperation sortOperation = Aggregation.sort(Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -317,6 +327,17 @@ public class MyPageService {
         AggregationResults<ProblemMoreInfo> results = mongoOperations.aggregate(
             aggregation, "problem", ProblemMoreInfo.class);
 
-        return results.getMappedResults();
+        // 전체 페이지 계산
+        Query query = new Query();
+        query.addCriteria(Criteria.where("createdAt").gte(start).lte(end));
+
+        long total = mongoOperations.count(query,"problem");
+
+        Map<String, Object> problemInfo = new HashMap<>();
+
+        problemInfo.put("problemMoreInfoRes", results.getMappedResults());
+        problemInfo.put("total", total);
+
+        return problemInfo;
     }
 }
