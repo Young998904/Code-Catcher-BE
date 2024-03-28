@@ -187,7 +187,22 @@ public class CodingService {
         return mongoOperations.find(query, Problem.class);
     }
 
-    public ResponseEntity<GPTFeedBackResultRes> getGPTCode(Long problemId, String codeType) {
+    public ResponseEntity<GPTFeedBackResultRes> getGPTCode(String token, Long problemId, String codeType) {
+        // 유저의 내코드 GPT 리뷰 사용 가능 여부 조회
+        String jwt = filterJwt(token);
+
+        String userId = getUserId(jwt);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         Problem p = problemRepository.findById(problemId).orElse(null);
 
         if (p == null) {
@@ -195,10 +210,10 @@ public class CodingService {
         }
 
         if (codeType.equals("java")) {
-            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain()), HttpStatus.OK);
+            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain(), user.isUsed()), HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain()), HttpStatus.OK);
+            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain(), user.isUsed()), HttpStatus.OK);
         }
     }
 

@@ -10,4 +10,5 @@ import lombok.Getter;
 public class GPTFeedBackResultRes {
     private String gptCode;
     private String gptCodeExplain;
+    private boolean isUsed;
 }
