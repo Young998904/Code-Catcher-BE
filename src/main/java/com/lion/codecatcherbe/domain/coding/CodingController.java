@@ -81,8 +81,8 @@ public class CodingController {
     }
 
     @GetMapping("/gpt/feedback")
-    public ResponseEntity<GPTFeedBackResultRes> getGPTFeedBack(@RequestParam Long problemId, @RequestParam String codeType) {
-        return codingService.getGPTCode(problemId, codeType);
+    public ResponseEntity<GPTFeedBackResultRes> getGPTFeedBack(@RequestHeader(value = "Authorization", required = false) String token, @RequestParam Long problemId, @RequestParam String codeType) {
+        return codingService.getGPTCode(token, problemId, codeType);
     }
 
     @PostMapping("gen")
