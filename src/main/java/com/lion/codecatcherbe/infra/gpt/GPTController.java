@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,9 +31,9 @@ public class GPTController {
         ChatGPT 내 코드 피드백
     */
     @PostMapping("/feedback")
-    public ResponseEntity<GPTReviewRes> gptFeedbackTest (@RequestBody CodeReviewReq codeReviewReq) {
+    public ResponseEntity<GPTReviewRes> gptFeedbackTest (@RequestHeader(value = "Authorization", required = false) String token, @RequestBody CodeReviewReq codeReviewReq) {
 
-        return gptService.getGptFeedback(codeReviewReq);
+        return gptService.getGptFeedback(token, codeReviewReq);
     }
 
     /*
