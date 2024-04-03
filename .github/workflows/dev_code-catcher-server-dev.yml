@@ -21,8 +21,12 @@ jobs:
         with:
           java-version: '17'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Copy yml File
+        run: |
+          echo "${{ secrets.BE_APPLICATION_DEV_YML }}" | base64 -d > ${{ github.workspace }}/src/main/resources/application.yml
+
+      - name: Build with Gradle
+        run: ./gradlew build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -50,4 +54,4 @@ jobs:
           app-name: 'code-catcher-server-dev'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B882C2FCAF1B47A8929E6C3C35D5EB3A }}
-          package: '*.jar'
+          package: 'Code-Catcher-BE-0.0.1-SNAPSHOT.jar'
