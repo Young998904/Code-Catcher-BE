@@ -3,7 +3,7 @@ package com.lion.codecatcherbe.domain.bookmark;
 import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkUpdateReq;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkDeleteRes;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkInfoRes;
-import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkReq;
+import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkSaveReq;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkRecordRes;
 import com.lion.codecatcherbe.domain.bookmark.model.Bookmark;
 import com.lion.codecatcherbe.domain.coding.model.Problem;
@@ -54,7 +54,7 @@ public class BookmarkService {
         }
         return userId;
     }
-    public ResponseEntity<String> saveBookmark(String token, BookMarkReq bookMarkReq) {
+    public ResponseEntity<String> saveBookmark(String token, BookMarkSaveReq bookMarkSaveReq) {
         String jwt = filterJwt(token);
 
         String userId = getUserId(jwt);
@@ -69,7 +69,7 @@ public class BookmarkService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Problem problem = problemRepository.findById(bookMarkReq.getProblemId()).orElse(null);
+        Problem problem = problemRepository.findById(bookMarkSaveReq.getProblemId()).orElse(null);
 
         if (problem == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -77,11 +77,11 @@ public class BookmarkService {
 
         Bookmark bookmark = Bookmark.builder()
             .userId(userId)
-            .problemId(bookMarkReq.getProblemId())
+            .problemId(bookMarkSaveReq.getProblemId())
             .createdAt(LocalDateTime.now().plusHours(9L))
-            .codeType(bookMarkReq.getCodeType())
-            .code(bookMarkReq.getCode())
-            .gptReviewRes(bookMarkReq.getGptReview().orElse(null))
+            .codeType(bookMarkSaveReq.getCodeType())
+            .code(bookMarkSaveReq.getCode())
+            .gptReviewRes(bookMarkSaveReq.getGptReview().orElse(null))
             .build();
 
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);

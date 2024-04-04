@@ -3,7 +3,7 @@ package com.lion.codecatcherbe.domain.bookmark;
 import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkUpdateReq;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkDeleteRes;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkInfoRes;
-import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkReq;
+import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkSaveReq;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkRecordRes;
 import com.lion.codecatcherbe.domain.mypage.dto.BookmarkMoreInfoRes;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookmarkController {
     private final BookmarkService bookmarkService;
     @PostMapping()
-    public ResponseEntity<String> saveBookmark(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody BookMarkReq bookMarkReq) {
-        return bookmarkService.saveBookmark(token, bookMarkReq);
+    public ResponseEntity<String> saveBookmark(@RequestHeader(value = "Authorization", required = false) String token, @RequestBody BookMarkSaveReq bookMarkSaveReq) {
+        return bookmarkService.saveBookmark(token, bookMarkSaveReq);
     }
 
     @GetMapping()

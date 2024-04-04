@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookMarkReq {
+public class BookMarkSaveReq {
     private Long problemId;
     private String codeType;
     private String code;
