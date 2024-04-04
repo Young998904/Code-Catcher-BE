@@ -81,7 +81,7 @@ public class BookmarkService {
             .createdAt(LocalDateTime.now().plusHours(9L))
             .codeType(bookMarkSaveReq.getCodeType())
             .code(bookMarkSaveReq.getCode())
-            .gptReviewRes(bookMarkSaveReq.getGptReview().orElse(null))
+            .gptReview(bookMarkSaveReq.getGptReview().orElse(null))
             .build();
 
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);
@@ -147,7 +147,7 @@ public class BookmarkService {
             .output_2(problem.getOutput_2())
             .gptCode(gptCode)
             .gptExplain(gptExplain)
-            .gptReviewRes(bookmark.getGptReviewRes())
+            .gptReviewRes(bookmark.getGptReview())
             .build();
 
         return new ResponseEntity<>(bookMarkInfoRes, HttpStatus.OK);
@@ -267,7 +267,8 @@ public class BookmarkService {
             return HttpStatus.NOT_FOUND;
         }
 
-        bookmark.updateBook(LocalDateTime.now().plusHours(9L), bookMarkUpdateReq.getMyCode(), bookMarkUpdateReq.getCodeType());
+        bookmark.updateBook(LocalDateTime.now().plusHours(9L), bookMarkUpdateReq.getMyCode(), bookMarkUpdateReq.getCodeType(), bookMarkUpdateReq.getGptReview()
+            .orElse(null));
 
         bookmarkRepository.save(bookmark);
 
