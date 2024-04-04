@@ -1,5 +1,7 @@
 package com.lion.codecatcherbe.domain.bookmark.dto.request;
 
+import com.lion.codecatcherbe.infra.gpt.dto.response.GPTReviewRes;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,4 +13,9 @@ public class BookMarkReq {
     private Long problemId;
     private String codeType;
     private String code;
+    private GPTReviewRes gptReview;
+
+    public Optional<GPTReviewRes> getGptReview () {
+        return Optional.ofNullable(gptReview);
+    }
 }
