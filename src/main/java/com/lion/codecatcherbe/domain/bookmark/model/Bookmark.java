@@ -1,5 +1,6 @@
 package com.lion.codecatcherbe.domain.bookmark.model;
 
+import com.lion.codecatcherbe.infra.gpt.dto.response.GPTReviewRes;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Bookmark {
     private LocalDateTime createdAt;
     private String code;
     private String codeType;
+    private GPTReviewRes gptReviewRes;
 
     public void updateBook(LocalDateTime createdAt, String code, String codeType) {
         this.createdAt = createdAt;
