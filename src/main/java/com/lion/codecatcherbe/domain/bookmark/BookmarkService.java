@@ -147,6 +147,7 @@ public class BookmarkService {
             .output_2(problem.getOutput_2())
             .gptCode(gptCode)
             .gptExplain(gptExplain)
+            .gptReviewRes(bookmark.getGptReviewRes())
             .build();
 
         return new ResponseEntity<>(bookMarkInfoRes, HttpStatus.OK);
