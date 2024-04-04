@@ -81,6 +81,7 @@ public class BookmarkService {
             .createdAt(LocalDateTime.now().plusHours(9L))
             .codeType(bookMarkReq.getCodeType())
             .code(bookMarkReq.getCode())
+            .gptReviewRes(bookMarkReq.getGptReview().orElse(null))
             .build();
 
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);
