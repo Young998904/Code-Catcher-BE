@@ -1,5 +1,6 @@
 package com.lion.codecatcherbe.domain.bookmark.dto.response;
 
+import com.lion.codecatcherbe.infra.gpt.dto.response.GPTReviewRes;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class BookMarkInfoRes {
     // Bookmark 에서 가져올 값
     private String myCode;
     private String codeType;
+    private GPTReviewRes gptReviewRes;
 
     // Problem 에서 가져올 값
     private Long level;
