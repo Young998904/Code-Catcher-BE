@@ -9,6 +9,8 @@ import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.dto.SocialUserInfoDto;
 import com.lion.codecatcherbe.infra.kakao.dto.SuccessLoginInfo;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,13 +45,16 @@ public class KakaoService {
         SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         // 3. (필요할 경우) 회원가입 처리, 회원일 경우 유저 정보를 바로 가지고옴
-        User kakaoUser = registerKakaoUserIfNeed(kakaoUserInfo);
+        Map<String, Object> userInfo = registerKakaoUserIfNeed(kakaoUserInfo);
+        User kakaoUser = (User) userInfo.get("user");
+        boolean isNew = (boolean) userInfo.get("isNew");
 
         // 4. 로그인 후 jwt 리턴
         String jwt = login(kakaoUser);
 
         return SuccessLoginInfo.builder()
             .jwt(jwt)
+            .isNew(isNew)
             .nickname(kakaoUser.getName())
             .userId(kakaoUser.getKakaoId())
             .email(kakaoUser.getEmail())
@@ -120,13 +125,15 @@ public class KakaoService {
         return new SocialUserInfoDto(id, nickname, email);
 
     }
-    private User registerKakaoUserIfNeed(SocialUserInfoDto kakaoUserInfo) {
+    private Map<String, Object> registerKakaoUserIfNeed(SocialUserInfoDto kakaoUserInfo) {
         // DB 에 중복된 email이 있는지 확인
         String kakaoEmail = kakaoUserInfo.getEmail();
         String nickname = kakaoUserInfo.getNickname();
         Long kakaoId = kakaoUserInfo.getId();
 
         User user = userRepository.findByEmail(kakaoEmail).orElse(null);
+
+        boolean isNew = false;
 
         if (user == null) {
             // 회원가입
@@ -141,9 +148,13 @@ public class KakaoService {
                 .build();
 
             userRepository.save(user);
+            isNew = true;
         }
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("user", user);
+        userInfo.put("isNew", isNew);
 
-        return user;
+        return userInfo;
     }
     private String login(User user) {
         return tokenProvider.createToken(user);
