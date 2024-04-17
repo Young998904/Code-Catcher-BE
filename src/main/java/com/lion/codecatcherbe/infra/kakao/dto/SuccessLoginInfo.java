@@ -9,6 +9,7 @@ import lombok.Data;
 @Builder
 public class SuccessLoginInfo {
     private String jwt;
+    private boolean isNew;
     private Long userId;
     private String nickname;
     private String email;
