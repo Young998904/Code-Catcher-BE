@@ -8,12 +8,12 @@ import com.lion.codecatcherbe.domain.coding.service.SequenceGeneratorService;
 import com.lion.codecatcherbe.domain.user.UserService;
 import com.lion.codecatcherbe.infra.gpt.dto.request.CodeReviewReq;
 import com.lion.codecatcherbe.infra.gpt.dto.response.GPTReviewRes;
+import com.lion.codecatcherbe.infra.gpt.prompt.CustomAzureOpenAiClient;
 import com.lion.codecatcherbe.infra.gpt.prompt.ReviewPrompt;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.ai.client.AiClient;
+import lombok.AllArgsConstructor;
 import org.springframework.ai.prompt.Prompt;
 import org.springframework.ai.prompt.messages.Message;
 import org.springframework.ai.prompt.messages.SystemMessage;
@@ -23,21 +23,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class GPTService {
 
     private final SequenceGeneratorService sequenceGeneratorService;
     private final UserService userService;
     private final ProblemRepository problemRepository;
-    private final AiClient client;
-    public ResponseEntity<GPTReviewRes> getGptFeedback(String token, CodeReviewReq codeReviewReq) {
+    private final CustomAzureOpenAiClient client;
+
+    public ResponseEntity<GPTReviewRes> getGptFeedback(String token, CodeReviewReq codeReviewReq, String model) {
         String myCode = codeReviewReq.getMyCode();
         Long problemId = codeReviewReq.getProblemId();
 
         Problem problem = problemRepository.findById(problemId).orElse(null);
 
         // role : user content : myCode
-        UserMessage userMessage = new UserMessage (myCode);
+        UserMessage userMessage = new UserMessage(myCode);
 
         // role : system content : 문제 정보 & 출력 형식
         ReviewPrompt reviewPrompt = ReviewPrompt.builder()
@@ -51,7 +52,7 @@ public class GPTService {
 
         String systemContent = reviewPrompt.toString();
 
-        SystemMessage systemMessage  = new SystemMessage(systemContent);
+        SystemMessage systemMessage = new SystemMessage(systemContent);
 
         // GPT 에 보낼 Prompt 생성
         List<Message> messages = new ArrayList<>();
@@ -61,14 +62,36 @@ public class GPTService {
         Prompt prompt = new Prompt(messages);
 
         // GPT 요청 및 응답 파싱
-        String jsonString = client.generate(prompt).getGeneration().getText();
-        jsonString = jsonString.replace("```json", "").replace("```", "").trim();
+        int maxRetries = 5; // 최대 호출 가능 횟수
+        int retryCount = 0; // 재호출 횟수
 
+        client.setModel(model); // 모델 설정
         Gson gson = new Gson();
 
-        GPTReviewRes gptReviewRes = gson.fromJson(jsonString, GPTReviewRes.class);
+        GPTReviewRes gptReviewRes = null;
 
-        userService.isUsedToTrue(token);
+        while (retryCount < maxRetries) { // 최대 호출 횟수는 5번으로 제한
+            String jsonString = client.generate(prompt).getGeneration().getText();
+
+            // gpt4 모델 사용시 json 형태 변환 진행
+            if (model.equals("code-catcher-ai-gpt4-preview")) {
+                jsonString = jsonString.replace("```json", "").replace("```", "").trim();
+            }
+
+            // 원하는 형태로 json 파싱 실패 시 재호출
+            try {
+                gptReviewRes = gson.fromJson(jsonString, GPTReviewRes.class);
+                userService.isUsedToTrue(token);
+                break;
+            } catch (Exception e) {
+                retryCount++;
+            }
+        }
+
+        if (gptReviewRes == null && retryCount >= maxRetries) {
+            // 오류 발생 시 500 에러 반환
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         // 객체 반환
         return new ResponseEntity<>(gptReviewRes, HttpStatus.OK);
