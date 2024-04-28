@@ -114,15 +114,17 @@ public class CodingService {
 
         Submit submit = submitRepository.findByUserIdAndProblemId(userId, id).orElse(null);
 
-        String javaCode, pythonCode;
+        String javaCode, pythonCode, jsCode;
 
         if (submit == null) {
             javaCode = null;
             pythonCode = null;
+            jsCode = null;
         }
         else {
             javaCode = submit.getLastSubmitJavaCode();
             pythonCode = submit.getLastSubmitPythonCode();
+            jsCode = submit.getLastSubmitJsCode();
         }
 
 
@@ -139,6 +141,7 @@ public class CodingService {
             .output_2(problem.getOutput_2())
             .javaSubmitCode(javaCode)
             .pythonSubmitCode(pythonCode)
+            .jsSubmitCode(jsCode)
             .build();
 
         return new ResponseEntity<>(questionRes, HttpStatus.OK);

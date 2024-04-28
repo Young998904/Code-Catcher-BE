@@ -21,6 +21,8 @@ public class Submit {
     private String lastSubmitJavaCode = null;
     @Default
     private String lastSubmitPythonCode = null;
+    @Default
+    private String lastSubmitJsCode = null;
 
     public void setLastSubmitJavaCode (String code) {
         this.lastSubmitJavaCode = code;
