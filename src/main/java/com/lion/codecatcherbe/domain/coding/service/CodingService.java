@@ -13,10 +13,14 @@ import com.lion.codecatcherbe.domain.coding.dto.response.ProblemGenRes;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.interfaces.CodeExtractor;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,6 +39,14 @@ public class CodingService {
     private final SubmitRepository submitRepository;
     private final UserRepository userRepository;
     private final MongoOperations mongoOperations;
+
+    private Map<String, CodeExtractor> actions = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        actions.put("java", (p, user) -> new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain(), user.isUsed()));
+        actions.put("python", (p, user) -> new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain(), user.isUsed()));
+    }
 
     public String filterJwt (String token) {
         String jwt = null;
@@ -209,12 +221,11 @@ public class CodingService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (codeType.equals("java")) {
-            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain(), user.isUsed()), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain(), user.isUsed()), HttpStatus.OK);
-        }
+        CodeExtractor extractor = actions.get(codeType);
+
+        GPTFeedBackResultRes result = extractor.extract(p, user);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     public HttpStatus genProblem(ProblemGenRes problemGenRes) {
