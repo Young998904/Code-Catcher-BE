@@ -32,6 +32,8 @@ public class Submit {
         this.lastSubmitPythonCode = code;
     }
 
+    public void setLastSubmitJsCode (String code) {this.lastSubmitJsCode = code;}
+
     public void toggleToSuccess() {
         this.isSuccess = true;
     }
