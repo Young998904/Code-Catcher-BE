@@ -46,6 +46,7 @@ public class CodingService {
     public void init() {
         actions.put("java", (p, user) -> new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain(), user.isUsed()));
         actions.put("python", (p, user) -> new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain(), user.isUsed()));
+        actions.put("js", (p, user) -> new GPTFeedBackResultRes(p.getJs_code(), p.getJs_explain(), user.isUsed()));
     }
 
     public String filterJwt (String token) {
