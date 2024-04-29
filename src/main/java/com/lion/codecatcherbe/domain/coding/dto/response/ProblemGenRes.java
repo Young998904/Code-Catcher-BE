@@ -24,4 +24,6 @@ public class ProblemGenRes {
     private String java_code;
     private String python_explain;
     private String java_explain;
+    private String js_code;
+    private String js_explain;
 }
