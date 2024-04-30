@@ -248,6 +248,8 @@ public class CodingService {
             .java_code(problemGenRes.getJava_code())
             .python_explain(problemGenRes.getPython_explain())
             .java_explain(problemGenRes.getJava_explain())
+            .js_code(problemGenRes.getJs_code())
+            .js_explain(problemGenRes.getJava_explain())
             .build();
 
         p.setCreatedAt(LocalDateTime.now().plusHours(9L));
