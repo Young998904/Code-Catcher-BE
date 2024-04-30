@@ -1,5 +1,6 @@
 package com.lion.codecatcherbe.domain.bookmark;
 
+import com.lion.codecatcherbe.common.CodeType;
 import com.lion.codecatcherbe.domain.bookmark.dto.request.BookMarkUpdateReq;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkDeleteRes;
 import com.lion.codecatcherbe.domain.bookmark.dto.response.BookMarkInfoRes;
@@ -117,25 +118,17 @@ public class BookmarkService {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        // Problem 객체로 부터 코드 타입 기반 AI 추천 코드 및 설명 가져오기
         Problem problem = problemRepository.findById(bookmark.getProblemId()). orElse(null);
 
-        String codeType = bookmark.getCodeType();
-        String gptCode;
-        String gptExplain;
+        CodeType codeType = CodeType.valueOf(bookmark.getCodeType().toUpperCase());
+        String[] codeAndExplain = codeType.extractCode(problem);
 
-        if (codeType.equals("java")) {
-            gptCode = problem.getJava_code();
-            gptExplain = problem.getJava_explain();
-        }
-        else {
-            gptCode = problem.getPython_code();
-            gptExplain = problem.getPython_explain();
-        }
-
+        // 반환 객체 생성
         BookMarkInfoRes bookMarkInfoRes = BookMarkInfoRes.builder()
             .level(problem.getLevel())
             .myCode(bookmark.getCode())
-            .codeType(codeType)
+            .codeType(codeType.toString().toLowerCase())
             .title(problem.getTitle())
             .subject(problem.getSubject())
             .script(problem.getScript())
@@ -145,8 +138,8 @@ public class BookmarkService {
             .output_1(problem.getOutput_1())
             .input_2(problem.getInput_2())
             .output_2(problem.getOutput_2())
-            .gptCode(gptCode)
-            .gptExplain(gptExplain)
+            .gptCode(codeAndExplain[0])
+            .gptExplain(codeAndExplain[1])
             .gptReviewRes(bookmark.getGptReview())
             .build();
 
