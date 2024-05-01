@@ -21,6 +21,8 @@ public class Submit {
     private String lastSubmitJavaCode = null;
     @Default
     private String lastSubmitPythonCode = null;
+    @Default
+    private String lastSubmitJsCode = null;
 
     public void setLastSubmitJavaCode (String code) {
         this.lastSubmitJavaCode = code;
@@ -29,6 +31,8 @@ public class Submit {
     public void setLastSubmitPythonCode (String code) {
         this.lastSubmitPythonCode = code;
     }
+
+    public void setLastSubmitJsCode (String code) {this.lastSubmitJsCode = code;}
 
     public void toggleToSuccess() {
         this.isSuccess = true;

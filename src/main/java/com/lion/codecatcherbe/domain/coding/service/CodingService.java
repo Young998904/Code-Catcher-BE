@@ -13,10 +13,14 @@ import com.lion.codecatcherbe.domain.coding.dto.response.ProblemGenRes;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.interfaces.CodeExtractor;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,6 +39,15 @@ public class CodingService {
     private final SubmitRepository submitRepository;
     private final UserRepository userRepository;
     private final MongoOperations mongoOperations;
+
+    private Map<String, CodeExtractor> actions = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        actions.put("java", (p, user) -> new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain(), user.isUsed()));
+        actions.put("python", (p, user) -> new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain(), user.isUsed()));
+        actions.put("javascript", (p, user) -> new GPTFeedBackResultRes(p.getJs_code(), p.getJs_explain(), user.isUsed()));
+    }
 
     public String filterJwt (String token) {
         String jwt = null;
@@ -102,15 +115,17 @@ public class CodingService {
 
         Submit submit = submitRepository.findByUserIdAndProblemId(userId, id).orElse(null);
 
-        String javaCode, pythonCode;
+        String javaCode, pythonCode, jsCode;
 
         if (submit == null) {
             javaCode = null;
             pythonCode = null;
+            jsCode = null;
         }
         else {
             javaCode = submit.getLastSubmitJavaCode();
             pythonCode = submit.getLastSubmitPythonCode();
+            jsCode = submit.getLastSubmitJsCode();
         }
 
 
@@ -127,6 +142,7 @@ public class CodingService {
             .output_2(problem.getOutput_2())
             .javaSubmitCode(javaCode)
             .pythonSubmitCode(pythonCode)
+            .jsSubmitCode(jsCode)
             .build();
 
         return new ResponseEntity<>(questionRes, HttpStatus.OK);
@@ -209,12 +225,11 @@ public class CodingService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (codeType.equals("java")) {
-            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getJava_code(), p.getJava_explain(), user.isUsed()), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(new GPTFeedBackResultRes(p.getPython_code(), p.getPython_explain(), user.isUsed()), HttpStatus.OK);
-        }
+        CodeExtractor extractor = actions.get(codeType);
+
+        GPTFeedBackResultRes result = extractor.extract(p, user);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     public HttpStatus genProblem(ProblemGenRes problemGenRes) {
@@ -233,6 +248,8 @@ public class CodingService {
             .java_code(problemGenRes.getJava_code())
             .python_explain(problemGenRes.getPython_explain())
             .java_explain(problemGenRes.getJava_explain())
+            .js_code(problemGenRes.getJs_code())
+            .js_explain(problemGenRes.getJava_explain())
             .build();
 
         p.setCreatedAt(LocalDateTime.now().plusHours(9L));

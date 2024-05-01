@@ -1,5 +1,6 @@
 package com.lion.codecatcherbe.domain.score;
 
+import com.lion.codecatcherbe.common.CodeType;
 import com.lion.codecatcherbe.domain.coding.model.Problem;
 import com.lion.codecatcherbe.domain.coding.repository.ProblemRepository;
 import com.lion.codecatcherbe.domain.score.dto.request.ScoreApiReq;
@@ -63,6 +64,9 @@ public class ScoreService {
 
     public ScoreApiRes getResultFromApi (String type, String code, String input, String output) {
         RestTemplate rt = new RestTemplate();
+
+        if (type.equals("javascript")) type = "js";
+
         String url = REDIRECT_HOST + "/" + type;
 
         HttpHeaders headers = new HttpHeaders();
@@ -124,8 +128,8 @@ public class ScoreService {
         if (!submit.isSuccess() && scoreSubmitResultRes.isCorrect()) submit.toggleToSuccess();
 
         // 코드 갱신
-        if (scoreProblemReq.getCodeType().equals("java")) submit.setLastSubmitJavaCode(scoreProblemReq.getCode());
-        else submit.setLastSubmitPythonCode(scoreProblemReq.getCode());
+        CodeType codeType = CodeType.valueOf(scoreProblemReq.getCodeType().toUpperCase());
+        codeType.applyCode(submit, scoreProblemReq.getCode());
 
         submitRepository.save(submit);
 
@@ -194,8 +198,9 @@ public class ScoreService {
         if (!submit.isSuccess() && scoreSubmitResultRes.isCorrect()) submit.toggleToSuccess();
 
         // 코드 갱신
-        if (scoreProblemReq.getCodeType().equals("java")) submit.setLastSubmitJavaCode(scoreProblemReq.getCode());
-        else submit.setLastSubmitPythonCode(scoreProblemReq.getCode());
+        CodeType codeType = CodeType.valueOf(scoreProblemReq.getCodeType().toUpperCase());
+        codeType.applyCode(submit, scoreProblemReq.getCode());
+
 
         submitRepository.save(submit);
 

@@ -18,4 +18,5 @@ public class QuestionRes {
     private String output_2;
     private String javaSubmitCode;
     private String pythonSubmitCode;
+    private String jsSubmitCode;
 }
