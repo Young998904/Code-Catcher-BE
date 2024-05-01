@@ -64,6 +64,9 @@ public class ScoreService {
 
     public ScoreApiRes getResultFromApi (String type, String code, String input, String output) {
         RestTemplate rt = new RestTemplate();
+
+        if (type.equals("javascript")) type = "js";
+
         String url = REDIRECT_HOST + "/" + type;
 
         HttpHeaders headers = new HttpHeaders();
