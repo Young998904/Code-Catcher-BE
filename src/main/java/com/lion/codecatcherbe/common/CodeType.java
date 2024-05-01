@@ -28,7 +28,7 @@ public enum CodeType {
             return new String[] {code, explain};
         }
     },
-    JS {
+    JAVASCRIPT {
         @Override
         public void applyCode (Submit submit, String code) {submit.setLastSubmitJsCode(code);}
         @Override
