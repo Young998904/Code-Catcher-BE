@@ -29,17 +29,15 @@ import org.springframework.web.client.RestTemplate;
 public class KakaoService {
     @Value("${oauth.kakao.client-id}")
     private String CLIENT_ID;
-    @Value("${oauth.kakao.url.host}")
-    private String REDIRECT_HOST;
 
     private final UserService userService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
-    public SuccessLoginInfo kakaoLogin(String code)
+    public SuccessLoginInfo kakaoLogin(String code, String host)
         throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
-        String accessToken = getAccessToken(code);
+        String accessToken = getAccessToken(code, host);
 
         // 2. "엑세스 토큰" 으로 카카오 API 호출하여 유저 정보를 가지고옴
         SocialUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
@@ -67,7 +65,7 @@ public class KakaoService {
             .build();
     }
 
-    private String getAccessToken(String code)
+    private String getAccessToken(String code, String host)
         throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -77,7 +75,7 @@ public class KakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", CLIENT_ID);
-        body.add("redirect_uri", REDIRECT_HOST + "/kakao/callback");
+        body.add("redirect_uri", host + "/kakao/callback");
         body.add("code", code);
 
         // HTTP 요청 보내기
