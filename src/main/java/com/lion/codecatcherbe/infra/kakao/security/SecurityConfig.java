@@ -22,6 +22,8 @@ public class SecurityConfig {
     String allowedOrigin;
     @Value("${cors.allowedDeploy}")
     String allowedDeploy;
+    @Value("${cors.allowedEnDeploy}")
+    String allowedEnDeploy;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,6 +46,7 @@ public class SecurityConfig {
         CorsConfiguration configuration= new CorsConfiguration();
         configuration.addAllowedOrigin(allowedOrigin);
         configuration.addAllowedOrigin(allowedDeploy);
+        configuration.addAllowedOrigin(allowedEnDeploy);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "OPTIONS","DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
