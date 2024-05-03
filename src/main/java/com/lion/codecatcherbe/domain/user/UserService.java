@@ -10,7 +10,7 @@ import com.lion.codecatcherbe.domain.user.model.Achieve;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.domain.user.repository.AchieveRepository;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
-import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.infra.social.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;

@@ -1,7 +1,7 @@
-package com.lion.codecatcherbe.infra.kakao;
+package com.lion.codecatcherbe.infra.social.kakao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lion.codecatcherbe.infra.kakao.dto.SuccessLoginInfo;
+import com.lion.codecatcherbe.infra.social.dto.SuccessLoginInfo;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

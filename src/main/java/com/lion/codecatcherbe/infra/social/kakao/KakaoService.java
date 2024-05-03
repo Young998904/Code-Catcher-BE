@@ -1,4 +1,4 @@
-package com.lion.codecatcherbe.infra.kakao;
+package com.lion.codecatcherbe.infra.social.kakao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lion.codecatcherbe.domain.user.UserService;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
-import com.lion.codecatcherbe.infra.kakao.dto.SocialUserInfoDto;
-import com.lion.codecatcherbe.infra.kakao.dto.SuccessLoginInfo;
-import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.infra.social.dto.SocialUserInfoDto;
+import com.lion.codecatcherbe.infra.social.dto.SuccessLoginInfo;
+import com.lion.codecatcherbe.infra.social.security.TokenProvider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

@@ -14,7 +14,7 @@ import com.lion.codecatcherbe.domain.mypage.dto.BookmarkMoreInfoRes;
 import com.lion.codecatcherbe.domain.mypage.dto.BookmarkMoreInfoRes.BookmarkMoreInfo;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
-import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.infra.social.security.TokenProvider;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

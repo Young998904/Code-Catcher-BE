@@ -15,7 +15,7 @@ import com.lion.codecatcherbe.domain.user.repository.AchieveRepository;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.UserService;
 import com.lion.codecatcherbe.domain.user.model.User;
-import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.infra.social.security.TokenProvider;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
