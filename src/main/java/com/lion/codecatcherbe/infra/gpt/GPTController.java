@@ -33,6 +33,6 @@ public class GPTController {
     @PostMapping("/feedback")
     public ResponseEntity<GPTReviewRes> gptFeedback (@RequestHeader(value = "Authorization", required = false) String token, @RequestBody CodeReviewReq codeReviewReq) {
 
-        return gptService.getGptFeedback(token, codeReviewReq,  "code-catcher-ai-gpt35");
+        return gptService.getGptFeedback(token, codeReviewReq,  "code-catcher-ai-gpt4");
     }
 }
