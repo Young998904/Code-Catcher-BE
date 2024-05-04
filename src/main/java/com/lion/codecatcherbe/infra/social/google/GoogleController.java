@@ -22,8 +22,6 @@ public class GoogleController {
     @GetMapping("/callback")
     public  ResponseEntity<SuccessLoginInfo> successGoogleLogin(HttpServletRequest request,  @RequestParam String code) {
         String host = request.getHeader("X-Forwarded-Host");
-        log.info("host : {}", host);
-        log.info("code : {}", code);
         SuccessLoginInfo info = googleService.googleLogin(code, host);
         return new ResponseEntity<>(info, generateHeader(info.getJwt()), HttpStatus.OK);
     }

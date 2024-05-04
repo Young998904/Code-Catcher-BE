@@ -13,19 +13,13 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class GoogleService {
 
     private final UserRepository userRepository;
@@ -73,39 +67,13 @@ public class GoogleService {
         params.put ("redirect_uri", host + "/google/callback");
         params.put ("grant_type", "authorization_code");
 
-        ResponseEntity<GoogleOAuthRes> responseEntity = null;
-
-        try {
-            responseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_URL, params, GoogleOAuthRes.class);
-            // 상태 코드 확인
-            if (!responseEntity.getStatusCode().is2xxSuccessful()) {
-                log.info("Error : {}", responseEntity.getStatusCode());
-            }
-        } catch (HttpClientErrorException e) {
-            // 클라이언트 에러 (4xx)
-            log.info("Client Error : {}", e.getStatusCode());
-            log.info("Error Body: {}", e.getResponseBodyAsString());
-        } catch (HttpServerErrorException e) {
-            // 서버 에러 (5xx)
-            log.info("Server Error : {}", e.getStatusCode());
-            log.info("Error Body: {}", e.getResponseBodyAsString());
-        } catch (ResourceAccessException e) {
-            // 네트워크 에러
-            log.info("Network Error : {}", e.getMessage());
-        } catch (RestClientException e) {
-            // 기타 에러
-            log.info("ETc Error : {}", e.getMessage());
-        }
-
-        System.out.println(responseEntity.getBody().getId_token());
+        ResponseEntity<GoogleOAuthRes> responseEntity=restTemplate.postForEntity(GOOGLE_TOKEN_URL, params, GoogleOAuthRes.class);
 
         String decodedInfo = decryptBase64UrlToken(responseEntity.getBody().getId_token().split("\\.")[1]);
 
         Gson gson = new Gson();
 
         GoogleInfoRes googleInfoRes = gson.fromJson(decodedInfo, GoogleInfoRes.class);
-
-        System.out.println(googleInfoRes.getEmail());
 
         return googleInfoRes;
     }
