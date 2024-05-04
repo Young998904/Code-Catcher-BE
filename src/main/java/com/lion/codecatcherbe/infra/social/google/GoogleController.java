@@ -1,6 +1,7 @@
 package com.lion.codecatcherbe.infra.social.google;
 
 import com.lion.codecatcherbe.infra.social.dto.SuccessLoginInfo;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class GoogleController {
     private final GoogleService googleService;
 
-    @GetMapping("/login/callback")
-    public  ResponseEntity<SuccessLoginInfo> successGoogleLogin(@RequestParam("code") String accessCode) {
-        System.out.println(accessCode);
-        SuccessLoginInfo info = googleService.googleLogin(accessCode);
+    @GetMapping("/callback")
+    public  ResponseEntity<SuccessLoginInfo> successGoogleLogin(HttpServletRequest request, @RequestParam("code") String accessCode) {
+        String host = request.getHeader("X-Forwarded-Host");
+        SuccessLoginInfo info = googleService.googleLogin(accessCode, host);
         return new ResponseEntity<>(info, generateHeader(info.getJwt()), HttpStatus.OK);
     }
 

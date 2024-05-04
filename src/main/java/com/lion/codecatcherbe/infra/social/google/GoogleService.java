@@ -30,12 +30,10 @@ public class GoogleService {
     private String GOOGLE_CLIENT_ID;
     @Value("${oauth.google.client-secret}")
     private String GOOGLE_CLIENT_SECRET;
-    @Value ("${oauth.google.redirect-uri}")
-    private String LOGIN_REDIRECT_URL;
 
-    public SuccessLoginInfo googleLogin(String accessCode) {
+    public SuccessLoginInfo googleLogin(String accessCode, String host) {
         // 유저 정보 확인
-        GoogleInfoRes googleUserInfo = getGoogleUserInfo(accessCode);
+        GoogleInfoRes googleUserInfo = getGoogleUserInfo(accessCode, host);
 
         // 유저 가입 여부 확인 및 가입
         Map<String, Object> userInfo = registerGoogleUserIfNeed(googleUserInfo);
@@ -59,14 +57,14 @@ public class GoogleService {
             .bookmarkCnt(userService.getCnt(googleUser)[2])
             .build();
     }
-    private GoogleInfoRes getGoogleUserInfo(String accessCode) {
+    private GoogleInfoRes getGoogleUserInfo(String accessCode, String host) {
         RestTemplate restTemplate=new RestTemplate();
         Map<String, String> params = new HashMap<>();
 
         params.put("code", accessCode);
         params.put("client_id", GOOGLE_CLIENT_ID);
         params.put("client_secret", GOOGLE_CLIENT_SECRET) ;
-        params.put ("redirect_uri", LOGIN_REDIRECT_URL);
+        params.put ("redirect_uri", host + "/google/callback");
         params.put ("grant_type", "authorization_code");
 
         ResponseEntity<GoogleOAuthRes> responseEntity=restTemplate.postForEntity(GOOGLE_TOKEN_URL, params, GoogleOAuthRes.class);
