@@ -1,4 +1,4 @@
-package com.lion.codecatcherbe.infra.kakao.dto;
+package com.lion.codecatcherbe.infra.social.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

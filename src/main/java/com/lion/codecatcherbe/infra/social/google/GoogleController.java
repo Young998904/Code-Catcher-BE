@@ -1,26 +1,28 @@
-package com.lion.codecatcherbe.infra.kakao;
+package com.lion.codecatcherbe.infra.social.google;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.lion.codecatcherbe.infra.kakao.dto.SuccessLoginInfo;
+import com.lion.codecatcherbe.infra.social.dto.SuccessLoginInfo;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/kakao")
+@RequestMapping("/google")
 @RequiredArgsConstructor
-public class KakaoController {
-    private final KakaoService kakaoService;
+@Slf4j
+public class GoogleController {
+    private final GoogleService googleService;
 
-    @RequestMapping("/callback")
-    public ResponseEntity<SuccessLoginInfo> kakaoLogin (HttpServletRequest request, @RequestParam String code) throws JsonProcessingException {
+    @GetMapping("/callback")
+    public  ResponseEntity<SuccessLoginInfo> successGoogleLogin(HttpServletRequest request,  @RequestParam String code) {
         String host = request.getHeader("X-Forwarded-Host");
-        SuccessLoginInfo info = kakaoService.kakaoLogin(code, host);
+        SuccessLoginInfo info = googleService.googleLogin(code, host);
         return new ResponseEntity<>(info, generateHeader(info.getJwt()), HttpStatus.OK);
     }
 

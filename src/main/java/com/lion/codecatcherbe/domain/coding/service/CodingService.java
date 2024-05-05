@@ -12,7 +12,7 @@ import com.lion.codecatcherbe.domain.score.repository.SubmitRepository;
 import com.lion.codecatcherbe.domain.coding.dto.response.ProblemGenRes;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
 import com.lion.codecatcherbe.domain.user.model.User;
-import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.infra.social.security.TokenProvider;
 import com.lion.codecatcherbe.interfaces.CodeExtractor;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

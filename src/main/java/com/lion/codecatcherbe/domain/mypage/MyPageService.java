@@ -10,7 +10,7 @@ import com.lion.codecatcherbe.domain.mypage.dto.ProblemMoreInfoRes;
 import com.lion.codecatcherbe.domain.mypage.dto.ProblemMoreInfoRes.ProblemMoreInfo;
 import com.lion.codecatcherbe.domain.user.model.User;
 import com.lion.codecatcherbe.domain.user.repository.UserRepository;
-import com.lion.codecatcherbe.infra.kakao.security.TokenProvider;
+import com.lion.codecatcherbe.infra.social.security.TokenProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
