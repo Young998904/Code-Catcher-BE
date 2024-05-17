@@ -22,11 +22,15 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +43,7 @@ public class CodingService {
     private final SubmitRepository submitRepository;
     private final UserRepository userRepository;
     private final MongoOperations mongoOperations;
+    private final MongoTemplate mongoTemplate;
 
     private Map<String, CodeExtractor> actions = new HashMap<>();
 
@@ -258,5 +263,25 @@ public class CodingService {
         problemRepository.save(p);
 
         return HttpStatus.CREATED;
+    }
+
+    @Scheduled(cron = "0 0 3 * * ?") // 매일 서버시간 기준 12시에 실행
+    public void updateOldestThreeProblemsDate () {
+        // 날짜가 가장 옛날로 되어있는 세문제를 한달뒤로 바꾼다
+        LocalDateTime newDate = LocalDateTime.now().plusHours(9L).plusDays(1L); // 다음날 12시로 세팅
+
+        // 가장 오래된 3문제를 가지고 온다
+        Query query = new Query();
+        query.with(Sort.by(Direction.ASC, "createdAt"));
+        query.limit(3);
+
+        List<Problem> problems = mongoTemplate.find(query, Problem.class);
+
+        // 날짜 갱신
+        for (Problem p : problems) {
+            p.setCreatedAt(newDate);
+        }
+
+        problemRepository.saveAll(problems);
     }
 }
